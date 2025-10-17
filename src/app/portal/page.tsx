@@ -199,7 +199,7 @@ export default function PortalPage() {
       meta: proofResult.meta,
     };
 
-    window.opener?.postMessage(msg, proofResult.meta.origin);
+    window.opener?.postMessage(msg, "*");
     window.close();
   };
 
