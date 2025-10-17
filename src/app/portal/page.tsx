@@ -190,7 +190,10 @@ export default function PortalPage() {
   };
 
   const sendProofToDappAndClose = () => {
-    if (!proofResult) return;
+    if (!proofResult) {
+      console.error("[PORTAL] Proof result is missing. Cannot send.");
+      return;
+    }
 
     const msg = {
       type: "zk-coinbase-proof",
@@ -199,8 +202,21 @@ export default function PortalPage() {
       meta: proofResult.meta,
     };
 
-    window.opener?.postMessage(msg, "*");
-    window.close();
+    const targetOrigin = proofResult.meta.origin;
+
+    console.log('[PORTAL] Sending proof...', {
+      messagePayload: msg,
+      targetOrigin: targetOrigin,
+      isOpenerAvailable: !!window.opener, 
+    });
+
+    try {
+      window.opener?.postMessage(msg, targetOrigin);
+      console.log("[PORTAL] Message sent successfully!");
+    } catch (error) {
+      console.error("[PORTAL] Failed to send message:", error);
+    }
+
   };
 
   const modePill = fromSdk ? "SDK Session" : "Read-only (Web)";
