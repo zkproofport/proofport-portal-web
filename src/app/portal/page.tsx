@@ -60,16 +60,15 @@ export default function PortalPage() {
   }
 
 function sendProofToSdk() {
-  if (!proofPayload) {
-    console.log("[PORTAL] No proofPayload to send.");
-    return;
-  }
+  if (!proofPayload) return;
 
+  const params = new URLSearchParams(window.location.search);
+  const nonce = params.get("nonce") || "missing";
   const rawOrigin = params.get("origin") || "*";
   const targetOrigin = /^https?:\/\/[^/]+$/.test(rawOrigin) ? rawOrigin : "*";
 
   const msg = {
-    type: "zk-coinbase-proof", // ← 원본과 동일하게
+    type: "zk-coinbase-proof", // 기존 타입 유지
     proof: proofPayload.proof,
     publicInputs: proofPayload.publicInputs,
     meta: proofPayload.meta,
@@ -82,22 +81,33 @@ function sendProofToSdk() {
     meta: msg.meta,
   });
 
+  let sent = false;
+
+  // 1) opener가 있으면 postMessage
   try {
-    window.opener?.postMessage(msg, targetOrigin);
-    console.log("[PORTAL] ✅ postMessage sent");
+    if (window.opener) {
+      window.opener.postMessage(msg, targetOrigin);
+      console.log("[PORTAL] ✅ postMessage sent");
+      sent = true;
+    }
   } catch (e) {
-    console.error("[PORTAL] postMessage error", e);
+    console.warn("[PORTAL] postMessage error", e);
   }
 
-  // 디버그/분석 용도: 자동으로 닫지 않음 또는 지연 닫기
-  if (!NO_CLOSE) {
-    // setTimeout(() => {
-    //   console.log("[PORTAL] Closing after 500ms delay");
-    //   window.close();
-    // }, 500);
-  } else {
-    console.log("[PORTAL] NO_CLOSE=1 → keep window open for debugging");
+  // 2) opener 없으면 BroadcastChannel로 백업 전송
+  if (!sent) {
+    try {
+      const ch = new BroadcastChannel(`zkp-${nonce}`);
+      ch.postMessage(msg);
+      console.log("[PORTAL] ✅ BroadcastChannel sent");
+      setTimeout(() => ch.close(), 500);
+    } catch (e) {
+      console.error("[PORTAL] BroadcastChannel error", e);
+    }
   }
+
+  // 디버깅 중이면 자동닫기 OFF(이미 넣어뒀으면 그대로 유지)
+  // setTimeout(() => window.close(), 500);
 }
 
 
