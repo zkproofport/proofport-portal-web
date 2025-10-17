@@ -91,10 +91,10 @@ function sendProofToSdk() {
 
   // 디버그/분석 용도: 자동으로 닫지 않음 또는 지연 닫기
   if (!NO_CLOSE) {
-    setTimeout(() => {
-      console.log("[PORTAL] Closing after 500ms delay");
-      window.close();
-    }, 500);
+    // setTimeout(() => {
+    //   console.log("[PORTAL] Closing after 500ms delay");
+    //   window.close();
+    // }, 500);
   } else {
     console.log("[PORTAL] NO_CLOSE=1 → keep window open for debugging");
   }
