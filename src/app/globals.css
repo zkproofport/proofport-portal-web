@@ -4,15 +4,21 @@
 
 /* ---- THEME TOKENS ---- */
 :root{
-  --navy:#0e2233; --navy-2:#0a1a28; --gold:#d6b15c; --gold-2:#f0d488; --ink:#c9d7e2;
+  /* colors */
+  --navy:#0e2233; 
+  --navy-2:#0a1a28; 
+  --gold:#d6b15c; 
+  --gold-2:#f0d488; 
+  --ink:#c9d7e2;
 
-  /* enlarged type scale */
-  --fs-3xl: clamp(42px, 6.2vw, 64px);
-  --fs-2xl: clamp(28px, 4.0vw, 36px);
-  --fs-xl:  clamp(22px, 2.8vw, 26px);
-  --fs-lg:  clamp(19px, 2.2vw, 22px);
-  --fs-md:  clamp(17px, 2.0vw, 20px);
-  --fs-sm:  clamp(15px, 1.8vw, 18px);
+  /* one-step smaller type scale */
+  --fs-3xl: clamp(36px, 5.2vw, 56px);   /* hero */
+  --fs-2xl: clamp(24px, 3.4vw, 30px);   /* section titles */
+  --fs-xl:  clamp(20px, 2.4vw, 22px);   /* subhead / large body */
+  --fs-lg:  clamp(17px, 2.0vw, 19px);   /* base body */
+  --fs-md:  clamp(15px, 1.8vw, 17px);   /* controls / small body */
+  --fs-sm:  clamp(14px, 1.6vw, 16px);   /* captions / badges */
+  --footer-h: 64px;                     /* fixed footer height */
 }
 
 /* ---- BASE ---- */
@@ -117,9 +123,18 @@ h1{
 
 /* ---- FOOTER (shared, fixed bottom) ---- */
 .footer{
-  position: fixed; left: 0; right: 0; bottom: 18px;
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  height: var(--footer-h);
   display: flex; align-items: center; justify-content: center; gap: 16px;
-  font-size: var(--fs-md); letter-spacing: .01em; color:#a9bfd1; opacity: .96;
+  padding: 0 16px;
+
+  background: linear-gradient(180deg, rgba(6,14,22,.60), rgba(6,14,22,.92));
+  border-top: 1px solid rgba(255,255,255,.10);
+  backdrop-filter: blur(10px);
+
+  font-size: var(--fs-md); letter-spacing: .01em; color:#a9bfd1; opacity: .98;
+  z-index: 50;
 }
 .footer strong{ color:#e9ba58; font-weight: 800 }
 .footer a{ color:#cfe4ff; text-decoration:none; border-bottom:1px dashed rgba(207,228,255,.45) }
