@@ -42,8 +42,10 @@ export default function PortalPage() {
   const nonce = params.get("nonce") || "missing";
 
   useEffect(() => {
-    if (window.opener) setFromSdk(true);
-  }, []);
+    if (origin && nonce) {
+      setFromSdk(true);
+    }
+  }, [origin, nonce]); 
 
   useEffect(() => {
     if (isConnected) setCompletedSteps([0]); 
@@ -197,7 +199,7 @@ export default function PortalPage() {
       meta: proofResult.meta,
     };
 
-    window.opener?.postMessage(msg, "*");
+    window.opener?.postMessage(msg, proofResult.meta.origin);
     window.close();
   };
 
