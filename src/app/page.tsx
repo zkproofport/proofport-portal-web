@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Header from "./components/Header";
+import Link from "next/link";
 
 export default function Landing() {
   return (
@@ -29,8 +30,8 @@ export default function Landing() {
             </div>
 
             <div className="cta-row">
-              <a className="btn btn-primary" href="/portal">Open Proof Portal</a>
-              <a className="btn btn-ghost" aria-disabled="true" href="/#">Docs — Coming Soon</a>
+              <Link className="btn btn-primary" href="/portal">Open Proof Portal</Link>
+              <Link className="btn btn-ghost" aria-disabled="true" href="/#">Docs — Coming Soon</Link>
             </div>
           </section>
           <span className="shine" />

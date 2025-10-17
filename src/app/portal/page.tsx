@@ -7,6 +7,7 @@ import { Sparkles, CheckCircle, Cpu, ShieldCheck } from "lucide-react";
 import { resolveCircuit, availableCircuits } from "@/lib/circuits/registry";
 import type { LogType } from "@/lib/circuits/types";
 import Image from "next/image";
+import Link from "next/link";
 
 type Log = { text: string; type: LogType; interactive?: boolean };
 
@@ -108,7 +109,7 @@ export default function PortalPage() {
             </button>
 
             {!fromSdk && (
-              <a className="btn btn-ghost btn-lg" href="/" title="Back to Landing">Back</a>
+              <Link className="btn btn-ghost btn-lg" href="/" title="Back to Landing">Back</Link>
             )}
           </div>
         </section>

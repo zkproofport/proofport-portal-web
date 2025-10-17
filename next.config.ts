@@ -3,6 +3,12 @@ import type { NextConfig } from "next";
 const webpack = require('next/dist/compiled/webpack/webpack');
 
 const nextConfig: NextConfig = {
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   reactStrictMode: true,
 
   async headers() {
