@@ -22,6 +22,8 @@ export default function PortalPage() {
   const { openConnectModal } = useConnectModal();
 
   const params = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : new URLSearchParams();
+  const DEBUG = params.get('debug') === '1';
+  const NO_CLOSE = params.get('noclose') === '1';
   const parentOrigin = useMemo(() => {
     const o = params.get("origin");
     return o && /^https?:\/\//.test(o) ? o : "*";
@@ -58,15 +60,46 @@ export default function PortalPage() {
   }
 
  function sendProofToSdk() {
-    if (!proofPayload) return;
-    const msg = {
-      type: "zk-coinbase-proof",
-      proof: proofPayload.proof,
-      publicInputs: proofPayload.publicInputs,
-      meta: proofPayload.meta,
-    };
-    window.opener?.postMessage(msg, parentOrigin);
+  if (!proofPayload) {
+    console.log('[PORTAL] No proofPayload to send.');
+    return;
   }
+
+  const targetOriginRaw = params.get('origin') || '*';
+  const targetOrigin =
+    /^https?:\/\/[^/]+$/.test(targetOriginRaw) ? targetOriginRaw : '*';
+
+  const msg = {
+    type: 'zk-coinbase-proof',
+    proof: proofPayload.proof,
+    publicInputs: proofPayload.publicInputs,
+    meta: proofPayload.meta,
+  };
+
+  console.log('[PORTAL] Preparing to postMessage -> opener');
+  console.log('[PORTAL] opener exists?', !!window.opener);
+  console.log('[PORTAL] targetOrigin:', targetOrigin);
+  console.log('[PORTAL] message.type:', msg.type);
+  console.log('[PORTAL] meta:', msg.meta);
+
+  try {
+    window.opener?.postMessage(msg, targetOrigin);
+    console.log('[PORTAL] postMessage sent.');
+  } catch (e) {
+    console.error('[PORTAL] postMessage error:', e);
+  }
+
+  // 디버그 중엔 닫지 않음. 운영 모드에서도 확실히 보내도록 약간의 지연 후 닫기.
+  if (!NO_CLOSE) {
+    setTimeout(() => {
+      console.log('[PORTAL] Closing window after delay (500ms).');
+      window.close();
+    }, 500);
+  } else {
+    console.log('[PORTAL] NO_CLOSE is set, keeping window open for debugging.');
+  }
+}
+
 
   const modePill = fromSdk ? "SDK Session" : "Read-only (Web)";
   const modePillClass = fromSdk ? "pill pill--ok" : "pill";
