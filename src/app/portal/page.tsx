@@ -22,6 +22,10 @@ export default function PortalPage() {
   const { openConnectModal } = useConnectModal();
 
   const params = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : new URLSearchParams();
+  const parentOrigin = useMemo(() => {
+    const o = params.get("origin");
+    return o && /^https?:\/\//.test(o) ? o : "*";
+  }, [params]);
   const circuitId = params.get("circuit");
   const nonce = params.get("nonce") || "missing";
   const origin = params.get("origin") || "unknown";
@@ -55,10 +59,20 @@ export default function PortalPage() {
 
   function sendProofToSdk() {
     if (!proofPayload) return;
-    window.opener?.postMessage({ type: "zkproofport-proof", ...proofPayload }, "*");
+
+    const message = {
+      type: "zk-coinbase-proof",
+      proof: proofPayload.proof,
+      publicInputs: proofPayload.publicInputs,
+      meta: proofPayload.meta,
+    };
+
+    window.opener?.postMessage(message, parentOrigin);
+
+    console.log('[portal] sent proof →', parentOrigin, message);
+
     window.close();
   }
-
   const modePill = fromSdk ? "SDK Session" : "Read-only (Web)";
   const modePillClass = fromSdk ? "pill pill--ok" : "pill";
   const circuitPill = circuit ? circuit.id : "No circuit";
