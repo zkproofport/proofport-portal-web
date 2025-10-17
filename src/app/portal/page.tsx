@@ -57,21 +57,23 @@ export default function PortalPage() {
     }
   }
 
-  function sendProofToSdk() {
+ function sendProofToSdk() {
     if (!proofPayload) return;
 
-    const message = {
+    const msg = {
       type: "zk-coinbase-proof",
       proof: proofPayload.proof,
       publicInputs: proofPayload.publicInputs,
       meta: proofPayload.meta,
     };
 
-    window.opener?.postMessage(message, parentOrigin);
+    console.log("[PORTAL] posting to", parentOrigin, msg);
+    console.log("[PORTAL] opener exists?", !!window.opener);
 
-    console.log('[portal] sent proof →', parentOrigin, message);
+    window.opener?.postMessage(msg, parentOrigin);
 
-    window.close();
+    window.opener?.postMessage(msg, "*");
+
   }
   const modePill = fromSdk ? "SDK Session" : "Read-only (Web)";
   const modePillClass = fromSdk ? "pill pill--ok" : "pill";
