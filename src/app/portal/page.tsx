@@ -59,22 +59,15 @@ export default function PortalPage() {
 
  function sendProofToSdk() {
     if (!proofPayload) return;
-
     const msg = {
       type: "zk-coinbase-proof",
       proof: proofPayload.proof,
       publicInputs: proofPayload.publicInputs,
       meta: proofPayload.meta,
     };
-
-    console.log("[PORTAL] posting to", parentOrigin, msg);
-    console.log("[PORTAL] opener exists?", !!window.opener);
-
     window.opener?.postMessage(msg, parentOrigin);
-
-    window.opener?.postMessage(msg, "*");
-
   }
+
   const modePill = fromSdk ? "SDK Session" : "Read-only (Web)";
   const modePillClass = fromSdk ? "pill pill--ok" : "pill";
   const circuitPill = circuit ? circuit.id : "No circuit";
