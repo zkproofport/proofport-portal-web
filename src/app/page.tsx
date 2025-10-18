@@ -31,7 +31,14 @@ export default function Landing() {
 
             <div className="cta-row">
               <Link className="btn btn-primary" href="/portal">Open Proof Portal</Link>
-              <Link className="btn btn-ghost" aria-disabled="true" href="/#">Docs — Coming Soon</Link>
+              <Link 
+                className="btn btn-primary" 
+                href="https://proofport-demo.netlify.app/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Try Live Demo
+              </Link>
             </div>
           </section>
           <span className="shine" />
