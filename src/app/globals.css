@@ -46,11 +46,17 @@ body{
 .icon{ width: 1.71875rem; height: 1.71875rem } /* 22px */
 
 /* ---- HEADER (centered) ---- */
-header[aria-label="site header"]{
-  position: sticky; top: 0; z-index: 20;
+header[aria-label="site header"] {
+  position: fixed; 
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  height: var(--footer-h);
+
   backdrop-filter: blur(0.78125rem); /* 10px */
   background: linear-gradient(180deg, rgba(3,12,20,.55), rgba(3,12,20,.25));
-  border-bottom: 1px solid rgba(255,255,255,.08); /* 얇은 선은 px 유지 */
+  border-bottom: 1px solid rgba(255,255,255,.08);
 }
 header[aria-label="site header"] .inner{
   width: min(100rem, 100% - 3.125rem); /* 1280px, 40px */
