@@ -193,7 +193,7 @@ h1{
   display:grid; gap: 1.71875rem; grid-template-columns: 43.75rem 1fr; /* 22px, 560px */
   margin: 1.71875rem auto 7.1875rem; /* 22px, 92px */
 }
-@media (max-width: 70.125rem){ .portal-grid{ grid-template-columns: 1fr } }
+@media (max-width: 50rem){ .portal-grid{ grid-template-columns: 1fr } }
 
 .panel{
   border: 1.5px solid rgba(255,255,255,.18);
