@@ -211,7 +211,7 @@ export default function PortalPage() {
     });
 
     try {
-      window.opener?.postMessage(msg, targetOrigin);
+      window.parent.postMessage(msg, targetOrigin);
       console.log("[PORTAL] Message sent successfully!");
     } catch (error) {
       console.error("[PORTAL] Failed to send message:", error);
