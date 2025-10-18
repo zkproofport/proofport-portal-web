@@ -189,6 +189,11 @@ export default function PortalPage() {
     }
   };
 
+  const handleCloseRequest = () => {
+    console.log("[PORTAL] Close button clicked. Sending close request to parent.");
+    window.parent.postMessage({ type: "zk-coinbase-close-request" }, origin as any);
+  };
+
   const sendProofToDappAndClose = () => {
     if (!proofResult) {
       console.error("[PORTAL] Proof result is missing. Cannot send.");
@@ -345,11 +350,6 @@ export default function PortalPage() {
     </div>
   );
 }
-
-const handleCloseRequest = () => {
-  console.log("[PORTAL] Close button clicked. Sending close request to parent.");
-  window.parent.postMessage({ type: "zk-coinbase-close-request" }, origin);
-};
 
 async function fetchKycAttestation(address: string): Promise<any> {
   const now = Math.floor(Date.now() / 1000);
