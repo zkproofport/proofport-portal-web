@@ -10,6 +10,8 @@ When accessed directly via its URL, the Portal displays an informational page wi
 
 ## How it Works
 
+<img width="4736" height="1618" alt="Untitled diagram-2025-10-18-081413" src="https://github.com/user-attachments/assets/84cfbdeb-1c4c-48ea-94ae-e06bf769b90b" />
+
 1.  **Initialization:** The Portal loads inside an iFrame, receiving the dApp's `origin` and a unique `nonce` via URL parameters.
 2.  **Wallet Connection:** The user connects their wallet (e.g., MetaMask) using standard libraries like RainbowKit/wagmi.
 3.  **Data Fetching:** The Portal queries relevant sources (like EASscan or an RPC endpoint) to find the required on-chain attestation data linked to the connected wallet address.
