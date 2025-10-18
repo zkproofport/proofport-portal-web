@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ZKProofport Portal
 
-## Getting Started
+This is the **Proof Portal** web application for the ZKProofport protocol. It provides the user interface where users securely generate ZK proofs within their browser.
 
-First, run the development server:
+## Overview
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+This application is designed to be launched within an **iFrame modal** when invoked by a dApp using the ZKProofport SDK. Inside the Portal, users connect their wallet, fetch the necessary on-chain data (like Coinbase KYC attestations via EAS), generate a Zero-Knowledge proof locally, and securely return the result to the originating dApp via `postMessage`.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+When accessed directly via its URL, the Portal displays an informational page with features disabled.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## How it Works
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1.  **Initialization:** The Portal loads inside an iFrame, receiving the dApp's `origin` and a unique `nonce` via URL parameters.
+2.  **Wallet Connection:** The user connects their wallet (e.g., MetaMask) using standard libraries like RainbowKit/wagmi.
+3.  **Data Fetching:** The Portal queries relevant sources (like EASscan or an RPC endpoint) to find the required on-chain attestation data linked to the connected wallet address.
+4.  **Proof Generation:** Using the fetched data and user signature (obtained via the connected wallet), the Portal executes the appropriate Noir ZK circuit (compiled to WASM) locally in the browser via `@noir-lang/noir_js` and `@aztec/bb.js`.
+5.  **Result Transmission:** Upon successful proof generation, the Portal sends the `proof`, `publicInputs`, and `meta` back to the parent window (the dApp) using `window.parent.postMessage`, targeting the specific `origin` provided during initialization. It also handles requests from the user to close the portal via a dedicated `postMessage` type.
 
-## Learn More
+## Technology Stack
 
-To learn more about Next.js, take a look at the following resources:
+* **Framework:** Next.js (App Router)
+* **UI:** React, Tailwind CSS
+* **Web3:** wagmi, RainbowKit, ethers.js
+* **ZK Proving:** @aztec/bb.js (UltraHonk Backend), @noir-lang/noir_js
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Local Development Setup
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1.  **Clone the repository:**
+    ```bash
+    git clone [https://github.com/zkproofport/proofport-portal-web.git](https://github.com/zkproofport/proofport-portal-web.git)
+    cd proofport-portal-web
+    ```
 
-## Deploy on Vercel
+2.  **Install dependencies:**
+    ```bash
+    npm install
+    # or
+    yarn install
+    ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+3.  **Configure environment variables:**
+    Create a `.env.local` file in the project root and add the necessary variables. An RPC URL for the relevant network (e.g., Base) is required.
+    ```env
+    NEXT_PUBLIC_BASE_RPC_URL=https://your_base_rpc_url_here
+    ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+4.  **Run the development server:**
+    ```bash
+    npm run dev
+    # or
+    yarn dev
+    ```
+    The Portal will be accessible at `http://localhost:3000` (or your configured port). You can test the UI directly or configure a local demo dApp to point its SDK's `PROOF_PORTAL_URL` to this local address for integration testing.
+
+## Contributing
+
+Bug reports and feature suggestions are welcome via GitHub Issues.
+
+## License
+
+[MIT](LICENSE)
