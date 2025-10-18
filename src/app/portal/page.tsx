@@ -224,6 +224,25 @@ export default function PortalPage() {
 
   return (
     <div className="portal-wrap">
+      <button 
+        onClick={handleCloseRequest}
+        title="Close"
+        style={{
+          position: 'absolute',
+          top: '15px',
+          right: '20px',
+          background: 'transparent',
+          border: 'none',
+          fontSize: '28px',
+          color: '#888',
+          cursor: 'pointer',
+          lineHeight: '1',
+          padding: '0',
+          zIndex: 10
+        }}
+      >
+        &times;
+      </button>
       <div className="portal-topbar">
         <div className="brand">
           <Image src="/logo.png" alt="" width={28} height={28} style={{ borderRadius: 8 }} />
@@ -317,6 +336,11 @@ export default function PortalPage() {
     </div>
   );
 }
+
+const handleCloseRequest = () => {
+  console.log("[PORTAL] Close button clicked. Sending close request to parent.");
+  window.parent.postMessage({ type: "zk-coinbase-close-request" }, origin);
+};
 
 async function fetchKycAttestation(address: string): Promise<any> {
   const now = Math.floor(Date.now() / 1000);
