@@ -38,8 +38,8 @@ export default function PortalPage() {
   const { data: walletClient } = useWalletClient();
 
   const params = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : new URLSearchParams();
-  const origin = params.get("origin") || "unknown";
-  const nonce = params.get("nonce") || "missing";
+  const origin = params.get("origin");
+  const nonce = params.get("nonce");
 
   useEffect(() => {
     if (origin && nonce) {
@@ -254,72 +254,81 @@ export default function PortalPage() {
         </div>
       </div>
 
-      <div className="portal-grid">
-        {/* 좌측: 안내/버튼 (원본 기능 + 최신 디자인) */}
-        <section className="panel" aria-label="Run panel">
-          <div className="eyebrow" style={{ marginBottom: 10 }}>Proof Portal</div>
-          <h2>Private Coinbase KYC Verification</h2>
-          <p className="sub">
-            Prove identity and eligibility without exposing your wallet or personal data. Proofs are generated locally and
-            only cryptographic results leave the browser.
-          </p>
-
-          <ul className="step-list">
-            {STEPS.map((s, i) => {
-              const done = completedSteps.includes(i);
-              const active = currentStep === i;
-              return (
-                <li key={i} className={`step${done ? " done" : ""}`}>
-                  {active ? <Loader2 className="icon animate-spin" /> : done ? <CheckCircle className="icon" /> : <span className="dot" />}
-                  <span>{active ? s.action : done ? s.done : s.action}</span>
-                </li>
-              );
+      {fromSdk ? (
+        <div className="portal-grid">
+          <section className="panel" aria-label="Run panel">
+            <div className="eyebrow" style={{ marginBottom: 10 }}>Proof Portal</div>
+            <h2 className="text-xl">Private Coinbase KYC Verification</h2>
+            <p className="sub text-xs">
+              Prove identity and eligibility without exposing your wallet or personal data. Proofs are generated locally and
+              only cryptographic results leave the browser.
+            </p>
+            <ul className="step-list text-xs">
+              {STEPS.map((s, i) => {
+                const done = completedSteps.includes(i);
+                const active = currentStep === i;
+                return (
+                  <li key={i} className={`step${done ? " done" : ""}`}>
+                    {active ? <Loader2 className="icon animate-spin" /> : done ? <CheckCircle className="icon" /> : <span className="dot" />}
+                    <span>{active ? s.action : done ? s.done : s.action}</span>
+                  </li>
+                );
+              })}
+            </ul>
+            <div className="portal-actions">
+              <button
+                onClick={handleProve}
+                className="btn btn-primary btn-lg"
+                disabled={!fromSdk || loading}
+                title={fromSdk ? "Generate proof" : "Open via SDK to enable"}
+              >
+                {!isConnected ? "Connect Wallet" : loading ? "Generating ZK Proof..." : "Generate ZK Proof"}
+              </button>
+            </div>
+          </section>
+          <section className="terminal" aria-label="Terminal">
+            <div className="bar">
+              <Cpu className="icon" /> <span>UltraHonk Engine</span>
+              <span style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 6 }}>
+                <Sparkles className="icon" /> <span>Live logs</span>
+              </span>
+            </div>
+            {logs.map((log, i) => {
+              const cls = log.type === "success" ? "log-success" : log.type === "error" ? "log-error" : log.type === "highlight" ? "log-highlight" : log.type === "note" ? "log-note" : "log-info";
+              return <div key={i} className={cls}>{log.text}</div>;
             })}
-          </ul>
-
-          <div className="portal-actions">
-            <button
-              onClick={handleProve}
-              className="btn btn-primary btn-lg"
-              disabled={!fromSdk || loading}
-              title={fromSdk ? "Generate proof" : "Open via SDK to enable"}
-            >
-              {!isConnected ? "Connect Wallet" : loading ? "Generating ZK Proof..." : fromSdk ? "Generate ZK Proof" : "Proof Generation Disabled"}
-            </button>
-
-            {!fromSdk && (
-              <Link className="btn btn-ghost btn-lg" href="/" title="Back to Landing">
-                Back
-              </Link>
+            <div ref={terminalEndRef} />
+            {logs.some((l) => l.interactive) && proofResult && (
+              <button onClick={sendProofToDappAndClose} className="btn btn-primary btn-lg" style={{ width: "100%", marginTop: 14 }}>
+                Send Proof to dApp
+              </button>
             )}
-          </div>
-        </section>
-
-        <section className="terminal" aria-label="Terminal">
-          <div className="bar">
-            <Cpu className="icon" /> <span>UltraHonk Engine</span>
-            <span style={{ marginLeft: "auto", display: "flex", alignItems: "center", gap: 6 }}>
-              <Sparkles className="icon" /> <span>Live logs</span>
-            </span>
-          </div>
-
-          {logs.map((log, i) => {
-            const cls =
-              log.type === "success" ? "log-success" :
-              log.type === "error" ? "log-error" :
-              log.type === "highlight" ? "log-highlight" :
-              log.type === "note" ? "log-note" : "log-info";
-            return <div key={i} className={cls}>{log.text}</div>;
-          })}
-          <div ref={terminalEndRef} />
-
-          {logs.some((l) => l.interactive) && proofResult && (
-            <button onClick={sendProofToDappAndClose} className="btn btn-primary btn-lg" style={{ width: "100%", marginTop: 14 }}>
-              Send Proof to dApp
-            </button>
-          )}
-        </section>
-      </div>
+          </section>
+        </div>
+      ) : (
+        <div className="portal-grid">
+          <section 
+            className="panel" 
+            style={{ 
+              gridColumn: '1 / -1', 
+              textAlign: 'center',
+              padding: '48px' 
+            }}
+          >
+            <div className="eyebrow" style={{ marginBottom: 12 }}>Information</div>
+            <h2 className="text-xl" style={{ color: 'white' }}>This is the zkProofport Portal</h2>
+            <p className="sub text-xs" style={{ maxWidth: '650px', margin: '16px auto 0' }}>
+              This is a secure environment for generating private, zero-knowledge proofs for various applications. 
+              It can only be activated when accessed from an integrated dApp using the <strong>zkProofport SDK</strong>.
+            </p>
+            <div className="portal-actions" style={{ justifyContent: 'center', marginTop: '24px' }}>
+              <Link className="btn btn-ghost btn-lg" href="/">
+                Learn More at Homepage
+              </Link>
+            </div>
+          </section>
+        </div>
+      )}
 
       <footer className="footer" role="contentinfo" aria-label="site footer">
         <span>© {new Date().getFullYear()} zkProofport</span>
