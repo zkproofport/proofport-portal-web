@@ -234,7 +234,7 @@ export default function PortalPage() {
         raw_transaction = Array.from(padArray(serialized_tx, 300));
         appendLog(`Fetched raw EIP-1559 tx (${tx_length} bytes)`, "info");
       });
-      
+
       // Step 3: Verify Coinbase Signer
       await step(3, async () => {
         const unsigned_tx_hash = txFull.unsignedHash;
@@ -308,7 +308,7 @@ export default function PortalPage() {
           merkle_proof_depth: depth,
         };
 
-        appendLog("Fetching circuit... (FIXME: Make sure URL is updated)", "info");
+        appendLog("Fetching circuit...", "info");
         const metaRes = await fetch(CIRCUIT_URL);
         const metadata = await metaRes.json();
         const noir = new Noir(metadata);
