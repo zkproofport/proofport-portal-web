@@ -208,10 +208,31 @@ export default function PortalPage() {
       // Step 2: Fetch Raw Transaction
       await step(2, async () => {
         tx = await fetchRawTx(attestation.txid);
-        if (tx.type !== 2 && tx.type !== '0x2') {
+        
+        const txType = typeof tx.type === 'string' ? parseInt(tx.type, 16) : tx.type;
+
+        if (txType !== 2) {
             throw new Error("Attestation is not an EIP-1559 (Type 2) transaction. Circuit only supports Type 2.");
         }
-        txFull = Transaction.from(tx);
+        
+        const cleanTx = {
+            type: txType, 
+            to: tx.to,
+            from: tx.from,
+            nonce: tx.nonce,
+            gasLimit: tx.gasLimit,
+            data: tx.data,
+            value: tx.value,
+            chainId: tx.chainId,
+            maxFeePerGas: tx.maxFeePerGas,
+            maxPriorityFeePerGas: tx.maxPriorityFeePerGas,
+            accessList: tx.accessList || [],
+            v: tx.v,
+            r: tx.r,
+            s: tx.s,
+        };
+
+        txFull = Transaction.from(cleanTx);
         
         const serialized_tx = ethers.getBytes(txFull.serialized);
         tx_length = serialized_tx.length;
@@ -219,11 +240,9 @@ export default function PortalPage() {
             throw new Error(`Transaction is too large (${tx_length} bytes). Circuit max is 300.`);
         }
         
-        // Pad transaction to 300 bytes for the circuit
         raw_transaction = Array.from(padArray(serialized_tx, 300));
         appendLog(`Fetched raw EIP-1559 tx (${tx_length} bytes)`, "info");
       });
-
       // Step 3: Verify Coinbase Signer
       await step(3, async () => {
         const unsigned_tx_hash = txFull.unsignedHash;
