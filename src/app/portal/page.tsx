@@ -3,7 +3,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useAccount, useWalletClient } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { ethers } from "ethers";
+import { ethers, Transaction, SigningKey, BrowserProvider } from "ethers";
+import { MerkleTree } from "merkletreejs";
 import { Noir } from "@noir-lang/noir_js";
 import { UltraHonkBackend } from "@aztec/bb.js";
 import { Sparkles, CheckCircle, Cpu, ShieldCheck, Loader2 } from "lucide-react";
@@ -13,16 +14,106 @@ import Link from "next/link";
 const STEPS = [
   { action: "Connecting wallet", done: "Wallet connected" },
   { action: "Fetching KYC attestation", done: "KYC attestation fetched" },
-  { action: "Extracting calldata from tx", done: "Calldata extracted" },
-  { action: "Generating digest from calldata", done: "Digest generated" },
-  { action: "Signing digest and recovering public key", done: "User signature verified" },
+  { action: "Fetching raw transaction", done: "Raw transaction fetched" },
+  { action: "Verifying Coinbase signer", done: "Coinbase signer verified" },
+  { action: "Signing dApp challenge", done: "User signature verified" },
   { action: "Generating ZK proof", done: "ZK proof generated" },
 ];
 
 const COINBASE_CONTRACT = "0x357458739F90461b99789350868CD7CF330Dd7EE";
 const ETH_SIGNED_PREFIX = "\x19Ethereum Signed Message:\n32";
+
 const CIRCUIT_URL =
   "https://raw.githubusercontent.com/hsy822/zk-coinbase-attestor/develop/packages/circuit/target/zk_coinbase_attestor.json";
+
+// =================================================================
+// AUTHORIZED SIGNERS
+// (This list must be kept in sync with the SDK/dApp)
+// =================================================================
+const AUTHORIZED_SIGNERS = [
+  '0x952f32128AF084422539C4Ff96df5C525322E564',
+  '0x8844591D47F17bcA6F5dF8f6B64F4a739F1C0080',
+  '0x88fe64ea2e121f49bb77abea6c0a45e93638c3c5',
+  '0x44ace9abb148e8412ac4492e9a1ae6bd88226803'
+];
+
+function padArray(arr: Uint8Array, targetLength: number): Uint8Array {
+  if (arr.length >= targetLength) return arr;
+  const padded = new Uint8Array(targetLength);
+  padded.set(arr);
+  return padded;
+}
+
+function extractPubkeyCoordinates(pubkey: string): { x: string; y: string } {
+  const pubkeyHex = pubkey.startsWith('0x04') ? pubkey.slice(4) : pubkey.slice(2);
+  const x = '0x' + pubkeyHex.slice(0, 64);
+  const y = '0x' + pubkeyHex.slice(64, 128);
+  return { x, y };
+}
+
+function generateSignalHashes(origin: string, nonce: string): { signal_hash: string, message_hash_to_sign: string } {
+  // This logic MUST match the SDK's verifier
+  const signal_bytes = ethers.toUtf8Bytes(origin + nonce);
+  const signal_hash = ethers.keccak256(signal_bytes); // This is the public input
+  
+  // This is what the wallet will sign (and the circuit will check)
+  const message_hash_to_sign = ethers.keccak256(
+    ethers.concat([ethers.toUtf8Bytes(ETH_SIGNED_PREFIX), ethers.getBytes(signal_hash)])
+  );
+  
+  return { signal_hash, message_hash_to_sign };
+}
+
+function buildMerkleProof(signerAddress: string): {
+  merkle_root: string;
+  merkle_proof: number[][];
+  leaf_index: number;
+  depth: number;
+  signerInList: boolean;
+} {
+  // Hash leaves to match Noir's keccak256(address, 20)
+  const leaves = AUTHORIZED_SIGNERS.map(addr =>
+    ethers.keccak256(ethers.getBytes(ethers.getAddress(addr)))
+  );
+
+  const tree = new MerkleTree(leaves, ethers.keccak256, {
+    sortPairs: false, // Match Noir's index-based ordering
+  });
+
+  const merkle_root = tree.getHexRoot();
+
+  const leafIndex = AUTHORIZED_SIGNERS.findIndex(
+    addr => addr.toLowerCase() === signerAddress.toLowerCase()
+  );
+
+  if (leafIndex === -1) {
+    return { merkle_root, merkle_proof: [], leaf_index: 0, depth: 0, signerInList: false };
+  }
+
+  const signerLeaf = leaves[leafIndex];
+  const proof = tree.getProof(signerLeaf);
+  const depth = proof.length;
+
+  // Pad proof to a fixed depth (e.g., 8) for the circuit
+  const maxDepth = 8;
+  const proofArray: number[][] = [];
+  for (let i = 0; i < maxDepth; i++) {
+    if (i < proof.length) {
+      proofArray.push(Array.from(ethers.getBytes('0x' + proof[i].data.toString('hex'))));
+    } else {
+      proofArray.push(Array(32).fill(0));
+    }
+  }
+
+  return {
+    merkle_root,
+    merkle_proof: proofArray,
+    leaf_index: leafIndex,
+    depth: depth,
+    signerInList: true,
+  };
+}
+
 
 export default function PortalPage() {
   const [loading, setLoading] = useState(false);
@@ -73,9 +164,9 @@ export default function PortalPage() {
         openConnectModal?.();
         return;
       }
-      if (!fromSdk) {
-        appendLog("Portal is read-only in web mode. Open via SDK.", "error");
-        return;
+      if (!fromSdk || !origin || !nonce) {
+        appendLog("Portal is read-only or session is invalid. Open via SDK.", "error");
+        return; 
       }
 
       setLoading(true);
@@ -84,11 +175,15 @@ export default function PortalPage() {
       setCompletedSteps([]);
       setProofResult(null);
 
+      // Variable declarations
       let attestation: any;
-      let tx: any;
-      let calldata: Uint8Array;
-      let digest: string, rawDigest: string;
+      let tx: any, txFull: Transaction;
+      let raw_transaction: number[], tx_length: number;
+      let coinbasePubkeyCoords: { x: string, y: string };
+      let merkle_root: string, merkle_proof: number[][], leaf_index: number, depth: number;
+      let signal_hash: string, message_hash_to_sign: string;
       let userX: Uint8Array, userY: Uint8Array, sigUser: ethers.Signature, userAddress: string;
+
 
       const step = async (i: number, fn: () => Promise<void>) => {
         setCurrentStep(i);
@@ -98,74 +193,130 @@ export default function PortalPage() {
         appendLog(`✔ ${STEPS[i].done}`, "success");
       };
 
+      // Step 0: Wallet Connection
       await step(0, async () => {
         appendLog(`Wallet: ${address}`, "info");
       });
 
+      // Step 1: Fetch KYC Attestation
       await step(1, async () => {
         attestation = await fetchKycAttestation(address!);
         if (!attestation) throw new Error("No valid KYC attestation found.");
         appendLog("Attestation tx: " + attestation.txid, "info");
       });
 
+      // Step 2: Fetch Raw Transaction
       await step(2, async () => {
         tx = await fetchRawTx(attestation.txid);
-        let calldataHex: string = tx.input;
-        if (calldataHex.length < 74) calldataHex = calldataHex.padEnd(74, "0");
-        calldata = ethers.getBytes(calldataHex.slice(0, 74));
-        appendLog("Extracted calldata (" + calldata.length + " bytes)", "info");
+        if (tx.type !== 2 && tx.type !== '0x2') {
+            throw new Error("Attestation is not an EIP-1559 (Type 2) transaction. Circuit only supports Type 2.");
+        }
+        txFull = Transaction.from(tx);
+        
+        const serialized_tx = ethers.getBytes(txFull.serialized);
+        tx_length = serialized_tx.length;
+        if (tx_length > 300) {
+            throw new Error(`Transaction is too large (${tx_length} bytes). Circuit max is 300.`);
+        }
+        
+        // Pad transaction to 300 bytes for the circuit
+        raw_transaction = Array.from(padArray(serialized_tx, 300));
+        appendLog(`Fetched raw EIP-1559 tx (${tx_length} bytes)`, "info");
       });
 
+      // Step 3: Verify Coinbase Signer
       await step(3, async () => {
-        rawDigest = ethers.keccak256(calldata);
-        digest = ethers.keccak256(ethers.concat([ethers.toUtf8Bytes(ETH_SIGNED_PREFIX), ethers.getBytes(rawDigest)]));
-        appendLog("Generated Ethereum-signed digest from calldata", "info");
+        const unsigned_tx_hash = txFull.unsignedHash;
+        const coinbaseSig = txFull.signature!;
+        
+        const coinbasePubkey = SigningKey.recoverPublicKey(unsigned_tx_hash, coinbaseSig);
+        coinbasePubkeyCoords = extractPubkeyCoordinates(coinbasePubkey);
+        const coinbaseSignerAddress = ethers.computeAddress(coinbasePubkey);
+        
+        appendLog(`Recovered Coinbase signer: ${coinbaseSignerAddress}`, "info");
+        
+        const merkleData = buildMerkleProof(coinbaseSignerAddress);
+        if (!merkleData.signerInList) {
+          throw new Error("Recovered signer is not in the authorized list. Please contact dApp admin.");
+        }
+        
+        merkle_root = merkleData.merkle_root;
+        merkle_proof = merkleData.merkle_proof;
+        leaf_index = merkleData.leaf_index;
+        depth = merkleData.depth;
+        
+        appendLog(`Signer is valid (index ${leaf_index}). Merkle root: ${merkle_root.slice(0, 10)}...`, "info");
       });
 
+      // Step 4: Sign dApp Challenge
       await step(4, async () => {
-        const signer = await new ethers.BrowserProvider(walletClient!).getSigner();
+        const hashes = generateSignalHashes(origin, nonce);
+        signal_hash = hashes.signal_hash;
+        message_hash_to_sign = hashes.message_hash_to_sign;
+        
+        appendLog(`Generated public signal_hash: ${signal_hash.slice(0, 10)}...`, "info");
+        
+        const signer = new BrowserProvider(walletClient!).getSigner();
         const sigUserRaw = await walletClient!.signMessage({
-          account: signer.address as `0x${string}`,
-          message: { raw: rawDigest as `0x${string}` },
+          account: (await signer).address as `0x${string}`,
+          message: { raw: signal_hash as `0x${string}` }, // Sign the 32-byte digest
         });
         sigUser = ethers.Signature.from(sigUserRaw);
 
-        const pubKeyHex = ethers.SigningKey.recoverPublicKey(digest, sigUser);
+        // Recover pubkey to send to circuit
+        const pubKeyHex = SigningKey.recoverPublicKey(message_hash_to_sign, sigUser);
         const pubKeyBytes = ethers.getBytes(pubKeyHex);
         userX = pubKeyBytes.slice(1, 33);
         userY = pubKeyBytes.slice(33);
 
-        userAddress = signer.address;
+        userAddress = (await signer).address;
         appendLog("Recovered public key from user signature", "info");
       });
 
+      // Step 5: Generate ZK Proof
       await step(5, async () => {
         const circuitInput = {
-          calldata: Array.from(calldata),
-          contract_address: Array.from(ethers.getBytes(COINBASE_CONTRACT)),
+          // Public Inputs
+          signal_hash: Array.from(ethers.getBytes(signal_hash)),
+          signer_list_merkle_root: Array.from(ethers.getBytes(merkle_root)),
+          
+          // Private Inputs
           user_address: Array.from(ethers.getBytes(userAddress)),
-          digest: Array.from(ethers.getBytes(digest)),
-          user_sig: Array.from(new Uint8Array([...ethers.getBytes(sigUser.r), ...ethers.getBytes(sigUser.s)])),
+          user_signature: Array.from(new Uint8Array([...ethers.getBytes(sigUser.r), ...ethers.getBytes(sigUser.s)])),
           user_pubkey_x: Array.from(userX),
           user_pubkey_y: Array.from(userY),
+          
+          raw_transaction: raw_transaction,
+          tx_length: tx_length,
+          
+          coinbase_attester_pubkey_x: Array.from(ethers.getBytes(coinbasePubkeyCoords.x)),
+          coinbase_attester_pubkey_y: Array.from(ethers.getBytes(coinbasePubkeyCoords.y)),
+          
+          coinbase_signer_merkle_proof: merkle_proof,
+          coinbase_signer_leaf_index: leaf_index,
+          merkle_proof_depth: depth,
         };
 
+        appendLog("Fetching circuit... (FIXME: Make sure URL is updated)", "info");
         const metaRes = await fetch(CIRCUIT_URL);
         const metadata = await metaRes.json();
         const noir = new Noir(metadata);
+        
+        appendLog("Initializing UltraHonk backend...", "info");
         const backend = new UltraHonkBackend(metadata.bytecode, { threads: 4 });
 
+        appendLog("Executing circuit to get witness...", "info");
         const { witness } = await noir.execute(circuitInput);
-
+        
+        appendLog("Generating ZK proof... (this may take a moment)", "info");
         const start = Date.now();
         const proof = await backend.generateProof(witness, { keccak: true });
         const duration = ((Date.now() - start) / 1000).toFixed(1);
 
         updateLastLog(`✔ ZK Proof generated (${duration}s)`, "highlight");
-        appendLog(`# A zero-knowledge proof verifying your Coinbase KYC attestation was successfully generated.`, "note");
-        appendLog(`# Entirely inside your browser memory. It was never stored or uploaded.`, "note");
-        appendLog(`# This proof will be sent just once to the originating dApp for verification via postMessage.`, "note");
-        appendLog(`# Afterwards it is discarded. Your wallet & onchain history remain private.`, "note");
+        appendLog(`# A privacy-enhanced proof verifying your KYC was successfully generated.`, "note");
+        appendLog(`# Your wallet address was NOT revealed to the dApp.`, "note");
+        appendLog(`# This proof is tied to this specific request (anti-replay).`, "note");
         appendLog(``, "info", true);
 
         const meta = {
@@ -176,7 +327,7 @@ export default function PortalPage() {
 
         setProofResult({
           proof: proof.proof,
-          publicInputs: proof.publicInputs,
+          publicInputs: proof.publicInputs, // Will be [signal_hash, merkle_root]
           meta,
         });
       });
@@ -324,7 +475,7 @@ export default function PortalPage() {
             <h2 className="text-xl" style={{ color: 'white' }}>This is the zkProofport Portal</h2>
             <p className="sub text-xs" style={{ maxWidth: '650px', margin: '16px auto 0' }}>
               This is a secure environment for generating private, zero-knowledge proofs for various applications. 
-              It can only be activated when accessed from an integrated dApp using the <strong>zkProofport SDK</strong>.
+              It can only be activated when accessed from an integrated dApp using the **zkProofport SDK**.
             </p>
             <div className="portal-actions" style={{ justifyContent: 'center', marginTop: '24px' }}>
               <Link className="btn btn-ghost btn-lg" href="/">
@@ -338,7 +489,7 @@ export default function PortalPage() {
       <footer className="footer" role="contentinfo" aria-label="site footer">
         <span>© {new Date().getFullYear()} zkProofport</span>
         <span>•</span>
-        <span><strong>Coming soon</strong> — private beta</span>
+        <span>**Coming soon** — private beta</span>
         <span>•</span>
         <span>
           <ShieldCheck className="inline-block" style={{ width: 14, height: 14, verticalAlign: "-2px" }} />{" "}
@@ -350,6 +501,10 @@ export default function PortalPage() {
     </div>
   );
 }
+
+// =================================================================
+// 6. UNMODIFIED FUNCTIONS
+// =================================================================
 
 async function fetchKycAttestation(address: string): Promise<any> {
   const now = Math.floor(Date.now() / 1000);

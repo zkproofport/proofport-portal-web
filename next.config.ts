@@ -1,7 +1,5 @@
 import type { NextConfig } from "next";
 
-const webpack = require('next/dist/compiled/webpack/webpack');
-
 const nextConfig: NextConfig = {
   eslint: {
     ignoreDuringBuilds: true,
@@ -30,7 +28,7 @@ const nextConfig: NextConfig = {
     ];
   },
 
-  webpack: (config) => {
+  webpack: (config, { webpack, isServer }) => {
     config.experiments = {
       ...(config.experiments || {}),
       asyncWebAssembly: true,
@@ -39,17 +37,20 @@ const nextConfig: NextConfig = {
     };
 
     config.resolve = config.resolve || {};
-    config.resolve.fallback = {
-      ...(config.resolve.fallback || {}),
-      buffer: require.resolve("buffer/"),
-    };
+    
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...(config.resolve.fallback || {}),
+        buffer: require.resolve("buffer/"),
+      };
 
-    config.plugins = config.plugins || [];
-    config.plugins.push(
-      new webpack.ProvidePlugin({
-        Buffer: ["buffer", "Buffer"],
-      })
-    );
+      config.plugins = config.plugins || [];
+      config.plugins.push(
+        new webpack.ProvidePlugin({
+          Buffer: ["buffer", "Buffer"],
+        })
+      );
+    }
 
     config.module = config.module || { rules: [] };
     config.module.rules = config.module.rules || [];
