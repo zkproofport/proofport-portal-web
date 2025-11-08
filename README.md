@@ -20,7 +20,7 @@ When accessed directly via its URL, the Portal displays an informational page wi
 
 ## Technology Stack
 
-* **Framework:** Next.js (App Router)
+* **Framework:** Next.js
 * **UI:** React, Tailwind CSS
 * **Web3:** wagmi, RainbowKit, ethers.js
 * **ZK Proving:** @aztec/bb.js (UltraHonk Backend), @noir-lang/noir_js
