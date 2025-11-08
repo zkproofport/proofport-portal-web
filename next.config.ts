@@ -18,13 +18,13 @@ const nextConfig: NextConfig = {
           { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
         ],
       },
-      // {
-      //   source: '/portal',
-      //   headers: [
-      //     { key: 'Cross-Origin-Opener-Policy', value: 'same-origin-allow-popups' },
-      //     { key: 'Cross-Origin-Embedder-Policy', value: 'unsafe-none' },
-      //   ],
-      // },
+      {
+        source: '/portal',
+        headers: [
+          { key: 'Cross-Origin-Opener-Policy', value: 'same-origin-allow-popups' },
+          { key: 'Cross-Origin-Embedder-Policy', value: 'unsafe-none' },
+        ],
+      },
     ];
   },
 
