@@ -263,18 +263,19 @@ export default function PortalPage() {
       await step(4, async () => {
         const hashes = generateSignalHashes(origin, nonce);
         signal_hash = hashes.signal_hash;
-        message_hash_to_sign = hashes.message_hash_to_sign;
+        
+        message_hash_to_sign = hashes.message_hash_to_sign; 
         
         appendLog(`Generated public signal_hash: ${signal_hash.slice(0, 10)}...`, "info");
         
         const signer = new BrowserProvider(walletClient!).getSigner();
+
         const sigUserRaw = await walletClient!.signMessage({
           account: (await signer).address as `0x${string}`,
-          message: signal_hash as `0x${string}`, // Sign the 32-byte digest (Wallet will add EIP-191 prefix)
+          message: { raw: message_hash_to_sign as `0x${string}` },
         });
         sigUser = ethers.Signature.from(sigUserRaw);
 
-        // Recover pubkey to send to circuit
         const pubKeyHex = SigningKey.recoverPublicKey(message_hash_to_sign, sigUser);
         const pubKeyBytes = ethers.getBytes(pubKeyHex);
         userX = pubKeyBytes.slice(1, 33);
