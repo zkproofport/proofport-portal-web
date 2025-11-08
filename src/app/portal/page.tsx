@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useAccount, useWalletClient } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { ethers, Transaction, SigningKey, BrowserProvider } from "ethers";
+import { ethers, Transaction, SigningKey, BrowserProvider, JsonRpcProvider } from "ethers";
 import { MerkleTree } from "merkletreejs";
 import { Noir } from "@noir-lang/noir_js";
 import { UltraHonkBackend } from "@aztec/bb.js";
@@ -207,36 +207,24 @@ export default function PortalPage() {
 
       // Step 2: Fetch Raw Transaction
       await step(2, async () => {
-        tx = await fetchRawTx(attestation.txid);
-        
-        const txType = typeof tx.type === 'string' ? parseInt(tx.type, 16) : tx.type;
-
-        if (txType !== 2) {
-            throw new Error("Attestation is not an EIP-1559 (Type 2) transaction. Circuit only supports Type 2.");
-        }
-        
-        const cleanTx = {
-            type: txType,
-            to: tx.to,
-            nonce: tx.nonce,
-            gasLimit: tx.gasLimit,
-            data: tx.data,
-            value: tx.value,
-            chainId: tx.chainId,
-            maxFeePerGas: tx.maxFeePerGas,
-            maxPriorityFeePerGas: tx.maxPriorityFeePerGas,
-            accessList: tx.accessList || [],
-            v: tx.v,
-            r: tx.r,
-            s: tx.s,
-        };
-
-        txFull = Transaction.from(cleanTx);
-        
-        if (txFull.from?.toLowerCase() !== tx.from.toLowerCase()) {
-            throw new Error("Transaction 'from' address mismatch after parsing.");
+        const rpcUrl = process.env.NEXT_PUBLIC_BASE_RPC_URL as string;
+        if (!rpcUrl) {
+          throw new Error("NEXT_PUBLIC_BASE_RPC_URL is not defined in .env.local");
         }
 
+        const baseProvider = new JsonRpcProvider(rpcUrl);
+        
+        tx = await baseProvider.getTransaction(attestation.txid);
+        
+        if (!tx) {
+          throw new Error(`Transaction not found: ${attestation.txid}`);
+        }
+        if (tx.type !== 2) {
+           throw new Error("Attestation is not an EIP-1559 (Type 2) transaction. Circuit only supports Type 2.");
+        }
+
+        txFull = Transaction.from(tx); 
+        
         const serialized_tx = ethers.getBytes(txFull.serialized);
         tx_length = serialized_tx.length;
         if (tx_length > 300) {
@@ -246,7 +234,7 @@ export default function PortalPage() {
         raw_transaction = Array.from(padArray(serialized_tx, 300));
         appendLog(`Fetched raw EIP-1559 tx (${tx_length} bytes)`, "info");
       });
-
+      
       // Step 3: Verify Coinbase Signer
       await step(3, async () => {
         const unsigned_tx_hash = txFull.unsignedHash;
