@@ -209,8 +209,34 @@ export default function PortalPage() {
       await step(2, async () => {
         tx = await fetchRawTx(attestation.txid);
         
-        txFull = Transaction.from(tx);
+        const txType = typeof tx.type === 'string' ? parseInt(tx.type, 16) : tx.type;
+
+        if (txType !== 2) {
+            throw new Error("Attestation is not an EIP-1559 (Type 2) transaction. Circuit only supports Type 2.");
+        }
         
+        const cleanTx = {
+            type: txType,
+            to: tx.to,
+            nonce: tx.nonce,
+            gasLimit: tx.gasLimit,
+            data: tx.data,
+            value: tx.value,
+            chainId: tx.chainId,
+            maxFeePerGas: tx.maxFeePerGas,
+            maxPriorityFeePerGas: tx.maxPriorityFeePerGas,
+            accessList: tx.accessList || [],
+            v: tx.v,
+            r: tx.r,
+            s: tx.s,
+        };
+
+        txFull = Transaction.from(cleanTx);
+        
+        if (txFull.from?.toLowerCase() !== tx.from.toLowerCase()) {
+            throw new Error("Transaction 'from' address mismatch after parsing.");
+        }
+
         const serialized_tx = ethers.getBytes(txFull.serialized);
         tx_length = serialized_tx.length;
         if (tx_length > 300) {
