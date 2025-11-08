@@ -215,10 +215,9 @@ export default function PortalPage() {
             throw new Error("Attestation is not an EIP-1559 (Type 2) transaction. Circuit only supports Type 2.");
         }
         
-        const cleanTx = {
-            type: txType, 
+        const signedTxObject = {
+            type: txType,
             to: tx.to,
-            from: tx.from,
             nonce: tx.nonce,
             gasLimit: tx.gasLimit,
             data: tx.data,
@@ -227,13 +226,20 @@ export default function PortalPage() {
             maxFeePerGas: tx.maxFeePerGas,
             maxPriorityFeePerGas: tx.maxPriorityFeePerGas,
             accessList: tx.accessList || [],
-            v: tx.v,
-            r: tx.r,
-            s: tx.s,
+            
+            signature: {
+                r: tx.r,
+                s: tx.s,
+                v: tx.v,
+            }
         };
 
-        txFull = Transaction.from(cleanTx);
+        txFull = Transaction.from(signedTxObject);
         
+        if (txFull.from?.toLowerCase() !== tx.from.toLowerCase()) {
+            throw new Error("Transaction 'from' address mismatch after parsing. Check Ethers version compatibility.");
+        }
+
         const serialized_tx = ethers.getBytes(txFull.serialized);
         tx_length = serialized_tx.length;
         if (tx_length > 300) {
@@ -243,6 +249,7 @@ export default function PortalPage() {
         raw_transaction = Array.from(padArray(serialized_tx, 300));
         appendLog(`Fetched raw EIP-1559 tx (${tx_length} bytes)`, "info");
       });
+      
       // Step 3: Verify Coinbase Signer
       await step(3, async () => {
         const unsigned_tx_hash = txFull.unsignedHash;
