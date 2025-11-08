@@ -14,29 +14,17 @@ const nextConfig: NextConfig = {
       {
         source: "/:path*",
         headers: [
-          { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
           { key: "Cross-Origin-Embedder-Policy", value: "require-corp" },
-          { key: "Origin-Agent-Cluster", value: "?1" },
-        ],
-      },
-
-      {
-        source: "/portal/:path*",
-        headers: [
           { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
-          { key: "Cross-Origin-Embedder-Policy", value: "require-corp" },
-          { key: "Permissions-Policy", value: "shared-array-buffer=(self)" },
-          { key: "Timing-Allow-Origin", value: "*" },
-          { key: "X-Frame-Options", value: "SAMEORIGIN" },
         ],
       },
-      {
-        source: "/_next/static/:path*",
-        headers: [
-          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
-          { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
-        ],
-      },
+      // {
+      //   source: '/portal',
+      //   headers: [
+      //     { key: 'Cross-Origin-Opener-Policy', value: 'same-origin-allow-popups' },
+      //     { key: 'Cross-Origin-Embedder-Policy', value: 'unsafe-none' },
+      //   ],
+      // },
     ];
   },
 
