@@ -12,51 +12,29 @@ const nextConfig: NextConfig = {
   async headers() {
     return [
       {
+        source: "/:path*",
+        headers: [
+          { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+          { key: "Cross-Origin-Embedder-Policy", value: "require-corp" },
+          { key: "Origin-Agent-Cluster", value: "?1" },
+        ],
+      },
+
+      {
+        source: "/portal/:path*",
+        headers: [
+          { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+          { key: "Cross-Origin-Embedder-Policy", value: "require-corp" },
+          { key: "Permissions-Policy", value: "shared-array-buffer=(self)" },
+          { key: "Timing-Allow-Origin", value: "*" },
+          { key: "X-Frame-Options", value: "SAMEORIGIN" },
+        ],
+      },
+      {
         source: "/_next/static/:path*",
         headers: [
           { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
           { key: "Cross-Origin-Resource-Policy", value: "same-origin" },
-        ],
-      },
-
-      {
-        source: "/portal-lite/:path*",
-        headers: [
-          { key: "Cross-Origin-Embedder-Policy", value: "unsafe-none" },
-          { key: "Cross-Origin-Opener-Policy", value: "same-origin-allow-popups" },
-          { key: "Origin-Agent-Cluster", value: "?1" },
-          { key: "Timing-Allow-Origin", value: "*" },
-          { key: "Permissions-Policy", value: "shared-array-buffer=(self)" },
-        ],
-      },
-
-      {
-        source: "/portal-iso/:path*",
-        headers: [
-          { key: "Cross-Origin-Embedder-Policy", value: "require-corp" },
-          { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
-          { key: "Origin-Agent-Cluster", value: "?1" },
-          { key: "Timing-Allow-Origin", value: "*" },
-          { key: "Permissions-Policy", value: "shared-array-buffer=(self)" },
-        ],
-      },
-
-      {
-        source: "/(portal-lite|portal-iso)/:path*\\.wasm",
-        headers: [
-          { key: "Content-Type", value: "application/wasm" },
-          { key: "Cache-Control", value: "public, max-age=31536000, immutable" },
-          { key: "Cross-Origin-Resource-Policy", value: "cross-origin" },
-          { key: "Access-Control-Allow-Origin", value: "*" },
-        ],
-      },
-      {
-        source: "/(portal-lite|portal-iso)/:path*\\.json",
-        headers: [
-          { key: "Content-Type", value: "application/json" },
-          { key: "Cache-Control", value: "public, max-age=3600" },
-          { key: "Cross-Origin-Resource-Policy", value: "cross-origin" },
-          { key: "Access-Control-Allow-Origin", value: "*" },
         ],
       },
     ];
