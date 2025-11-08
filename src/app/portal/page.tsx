@@ -52,12 +52,14 @@ function extractPubkeyCoordinates(pubkey: string): { x: string; y: string } {
 }
 
 function generateSignalHashes(origin: string, nonce: string): { signal_hash: string, message_hash_to_sign: string } {
+  // This logic MUST match the SDK's verifier
   const signal_bytes = ethers.toUtf8Bytes(origin + nonce);
-  const signal_hash = ethers.keccak256(signal_bytes); 
+  const signal_hash = ethers.keccak256(signal_bytes); // This is the public input
   
-  const signal_hash_bytes = ethers.getBytes(signal_hash);
-
-  const message_hash_to_sign = ethers.hashMessage(signal_hash_bytes);
+  // This is what the wallet will sign (and the circuit will check)
+  const message_hash_to_sign = ethers.keccak256(
+    ethers.concat([ethers.toUtf8Bytes(ETH_SIGNED_PREFIX), ethers.getBytes(signal_hash)])
+  );
   
   return { signal_hash, message_hash_to_sign };
 }
@@ -265,20 +267,20 @@ export default function PortalPage() {
         
         appendLog(`Generated public signal_hash: ${signal_hash.slice(0, 10)}...`, "info");
         
-        if (!address) throw new Error("Wallet address not found.");
-        userAddress = address; 
-
+        const signer = new BrowserProvider(walletClient!).getSigner();
         const sigUserRaw = await walletClient!.signMessage({
-          account: userAddress as `0x${string}`,
-          message: { raw: message_hash_to_sign as `0x${string}` },
+          account: (await signer).address as `0x${string}`,
+          message: { raw: signal_hash as `0x${string}` }, // Sign the 32-byte digest
         });
         sigUser = ethers.Signature.from(sigUserRaw);
 
+        // Recover pubkey to send to circuit
         const pubKeyHex = SigningKey.recoverPublicKey(message_hash_to_sign, sigUser);
         const pubKeyBytes = ethers.getBytes(pubKeyHex);
         userX = pubKeyBytes.slice(1, 33);
         userY = pubKeyBytes.slice(33);
 
+        userAddress = (await signer).address;
         appendLog("Recovered public key from user signature", "info");
       });
 
@@ -334,10 +336,20 @@ export default function PortalPage() {
           nonce,
         };
 
+        const publicInputsFeBytes32: string[] = proof.publicInputs.map((fe: any) => {
+          if (typeof fe === "bigint") return ("0x" + fe.toString(16).padStart(64, "0"));
+          if (typeof fe === "number") return ("0x" + fe.toString(16).padStart(64, "0"));
+          if (typeof fe === "string") {
+            const h = fe.startsWith("0x") ? fe.slice(2) : BigInt(fe).toString(16);
+            return "0x" + h.padStart(64, "0");
+          }
+          return ethers.hexlify(fe).padEnd(66, "0");
+        });
+
         setProofResult({
-          proof: proof.proof,
-          publicInputs: proof.publicInputs, // Will be [signal_hash, merkle_root]
-          meta,
+          proof: ethers.hexlify(proof.proof),  
+          publicInputs: publicInputsFeBytes32,
+          meta
         });
       });
 
