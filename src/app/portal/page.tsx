@@ -270,7 +270,7 @@ export default function PortalPage() {
         const signer = new BrowserProvider(walletClient!).getSigner();
         const sigUserRaw = await walletClient!.signMessage({
           account: (await signer).address as `0x${string}`,
-          message: { raw: signal_hash as `0x${string}` }, // Sign the 32-byte digest
+          message: signal_hash as `0x${string}`, // Sign the 32-byte digest (Wallet will add EIP-191 prefix)
         });
         sigUser = ethers.Signature.from(sigUserRaw);
 
