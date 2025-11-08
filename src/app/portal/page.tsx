@@ -52,14 +52,12 @@ function extractPubkeyCoordinates(pubkey: string): { x: string; y: string } {
 }
 
 function generateSignalHashes(origin: string, nonce: string): { signal_hash: string, message_hash_to_sign: string } {
-  // This logic MUST match the SDK's verifier
   const signal_bytes = ethers.toUtf8Bytes(origin + nonce);
-  const signal_hash = ethers.keccak256(signal_bytes); // This is the public input
+  const signal_hash = ethers.keccak256(signal_bytes); 
   
-  // This is what the wallet will sign (and the circuit will check)
-  const message_hash_to_sign = ethers.keccak256(
-    ethers.concat([ethers.toUtf8Bytes(ETH_SIGNED_PREFIX), ethers.getBytes(signal_hash)])
-  );
+  const signal_hash_bytes = ethers.getBytes(signal_hash);
+
+  const message_hash_to_sign = ethers.hashMessage(signal_hash_bytes);
   
   return { signal_hash, message_hash_to_sign };
 }
@@ -267,20 +265,20 @@ export default function PortalPage() {
         
         appendLog(`Generated public signal_hash: ${signal_hash.slice(0, 10)}...`, "info");
         
-        const signer = new BrowserProvider(walletClient!).getSigner();
+        if (!address) throw new Error("Wallet address not found.");
+        userAddress = address; 
+
         const sigUserRaw = await walletClient!.signMessage({
-          account: (await signer).address as `0x${string}`,
-          message: { raw: signal_hash as `0x${string}` }, // Sign the 32-byte digest
+          account: userAddress as `0x${string}`,
+          message: { raw: message_hash_to_sign as `0x${string}` },
         });
         sigUser = ethers.Signature.from(sigUserRaw);
 
-        // Recover pubkey to send to circuit
         const pubKeyHex = SigningKey.recoverPublicKey(message_hash_to_sign, sigUser);
         const pubKeyBytes = ethers.getBytes(pubKeyHex);
         userX = pubKeyBytes.slice(1, 33);
         userY = pubKeyBytes.slice(33);
 
-        userAddress = (await signer).address;
         appendLog("Recovered public key from user signature", "info");
       });
 
