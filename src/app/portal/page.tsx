@@ -24,7 +24,7 @@ const COINBASE_CONTRACT = "0x357458739F90461b99789350868CD7CF330Dd7EE";
 const ETH_SIGNED_PREFIX = "\x19Ethereum Signed Message:\n32";
 
 const CIRCUIT_URL =
-  "https://raw.githubusercontent.com/hsy822/zk-coinbase-attestor/develop/packages/circuit/target/zk_coinbase_attestor.json";
+  "https://raw.githubusercontent.com/zkproofport/circuits/main/coinbase-kyc/target/zk_coinbase_attestor.json";
 
 // =================================================================
 // AUTHORIZED SIGNERS
