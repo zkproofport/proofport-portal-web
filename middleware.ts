@@ -1,5 +1,3 @@
-// middleware.ts
-
 import { NextResponse, type NextRequest } from 'next/server';
 
 const premiumOrigins = [
@@ -12,8 +10,6 @@ export function middleware(request: NextRequest) {
     const requestOrigin = request.headers.get('Origin');
 
     const headers = new Headers();
-
-    headers.set('Content-Security-Policy', 'frame-ancestors *');
     
     headers.set('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
     headers.set('Cross-Origin-Embedder-Policy', 'unsafe-none');
