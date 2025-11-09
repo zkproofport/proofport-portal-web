@@ -44,7 +44,13 @@ const ZkCircuitAnimator = () => {
 
   useEffect(() => {
     const stageInterval = setInterval(() => {
-      setStageIndex((prev) => (prev + 1) % GENERIC_STAGES.length);
+      setStageIndex((prev) => {
+        const lastIndex = GENERIC_STAGES.length - 1;
+        if (prev === lastIndex) {
+          return lastIndex; 
+        }
+        return prev + 1;
+      });
     }, 2000); 
 
     return () => clearInterval(stageInterval);
