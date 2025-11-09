@@ -164,6 +164,19 @@ h1{
 /* ---- ANIM ---- */
 @keyframes floatIn{ from{ opacity:0; transform: translateY(1.09375rem) } to{ opacity:1; transform:none } } /* 14px */
 
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
 /* =========================================================
    PORTAL (clear separation, centered topbar + grouped status)
    ========================================================= */
@@ -273,4 +286,16 @@ h1{
   box-shadow: none;
   transform: none;
   filter: saturate(30%);
+}
+
+.log-circuit-effect {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  
+  color: var(--gold); 
+  opacity: 0.6;
+  
+  font-size: clamp(1.125rem, 1.8vw, 1.25rem);
+  line-height: 1.6;
+  word-break: break-all; 
+  overflow: hidden; 
 }

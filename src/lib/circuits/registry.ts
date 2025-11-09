@@ -1,9 +1,11 @@
-import { coinbaseKyc } from "./coinbaseKyc";
+
 import type { CircuitModule } from "./types";
+import { coinbaseKycModule } from "./coinbaseKycModule";
 
 const REGISTRY: Record<string, CircuitModule> = {
-  [coinbaseKyc.id]: coinbaseKyc,
+  [coinbaseKycModule.id]: coinbaseKycModule,
 };
 
-export const resolveCircuit = (id?: string | null) => (id ? REGISTRY[id] || null : null);
-export const availableCircuits = () => Object.values(REGISTRY);
+export const resolveCircuit = (id?: string | null): CircuitModule | null => {
+  return id ? REGISTRY[id] || null : null;
+};
