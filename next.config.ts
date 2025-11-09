@@ -13,30 +13,11 @@ const nextConfig: NextConfig = {
       {
         source: '/portal',
         headers: [
-          { key: 'Cross-Origin-Opener-Policy', value: 'same-origin-allow-popups' },
-          { key: 'Cross-Origin-Embedder-Policy', value: 'require-corp' },
-          { key: 'Cross-Origin-Resource-Policy', value: 'cross-origin' },
           { key: 'X-Frame-Options', value: ' ' }, 
           { 
             key: 'Content-Security-Policy', 
             value: "script-src 'self' 'unsafe-eval' 'unsafe-inline'; worker-src 'self' blob:;"
           }
-        ],
-      },
-      {
-        source: '/:path*.wasm', 
-        headers: [
-          { key: "Cross-Origin-Embedder-Policy", value: "require-corp" },
-          { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
-          { key: 'Cross-Origin-Resource-Policy', value: 'cross-origin' } 
-        ],
-      },
-      {
-        source: '/:path((?!portal).*(?<!\\.wasm))$',
-        headers: [
-          { key: "Cross-Origin-Embedder-Policy", value: "require-corp" },
-          { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
-          { key: 'Cross-Origin-Resource-Policy', value: 'same-origin' } 
         ],
       },
     ];
