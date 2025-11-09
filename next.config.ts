@@ -18,7 +18,7 @@ const nextConfig: NextConfig = {
           { key: 'Cross-Origin-Resource-Policy', value: 'cross-origin' },
           { 
             key: 'Content-Security-Policy', 
-            value: "script-src 'self' 'unsafe-eval';" 
+            value: "script-src 'self' 'unsafe-eval' 'unsafe-inline';" 
           }
         ],
       },
