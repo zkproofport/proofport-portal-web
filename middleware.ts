@@ -1,8 +1,9 @@
+// middleware.ts
+
 import { NextResponse, type NextRequest } from 'next/server';
 
 const premiumOrigins = [
   'https://proofport-demo.netlify.app',
-  // 'https://another-premium-dapp.com',
 ];
 
 export function middleware(request: NextRequest) {
@@ -10,17 +11,22 @@ export function middleware(request: NextRequest) {
     
     const requestOrigin = request.headers.get('Origin');
 
-    let coep = 'unsafe-none';
-    let coop = 'same-origin-allow-popups';
+    const headers = new Headers();
+
+    headers.set('Content-Security-Policy', 'frame-ancestors *');
+    
+    headers.set('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+    headers.set('Cross-Origin-Embedder-Policy', 'unsafe-none');
 
     if (requestOrigin && premiumOrigins.includes(requestOrigin)) {
-      coep = 'require-corp';
-      coop = 'same-origin';
+      headers.set('Cross-Origin-Opener-Policy', 'same-origin');
+      headers.set('Cross-Origin-Embedder-Policy', 'require-corp');
     }
 
     const response = NextResponse.next();
-    response.headers.set('Cross-Origin-Embedder-Policy', coep);
-    response.headers.set('Cross-Origin-Opener-Policy', coop);
+    headers.forEach((value, key) => {
+      response.headers.set(key, value);
+    });
     
     return response;
   }
