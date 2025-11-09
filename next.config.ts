@@ -8,14 +8,6 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   reactStrictMode: true,
-  async rewrites() {
-    return [
-      {
-        source: '/portal-premium',
-        destination: '/portal',
-      },
-    ];
-  },
   // async headers() {
   //   return [
   //     {

@@ -1,33 +1,32 @@
 import { NextResponse, type NextRequest } from 'next/server';
 
-const premiumOrigins = [
-  'https://proofport-demo.netlify.app',
-];
-
 export function middleware(request: NextRequest) {
-  const requestOrigin = request.headers.get('Origin');
-  
-  const response = NextResponse.next();
+  const res = NextResponse.next();
 
-  response.headers.set('Access-Control-Allow-Origin', '*');
-  response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-  response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  res.headers.set(
+    'Content-Security-Policy',
+    "frame-ancestors 'self' https://proofport-demo.netlify.app"
+  );
 
-  response.headers.set('Content-Security-Policy', 'frame-ancestors *');
+  res.headers.set('Access-Control-Allow-Origin', '*');
+  res.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  res.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
+  res.headers.set('Cross-Origin-Resource-Policy', 'cross-origin');
 
-  if (request.nextUrl.pathname.startsWith('/portal-premium')) {
-    response.headers.set('Cross-Origin-Opener-Policy', 'same-origin');
-    response.headers.set('Cross-Origin-Embedder-Policy', 'require-corp');
+  const p = request.nextUrl.pathname;
 
-  } else if (request.nextUrl.pathname.startsWith('/portal')) {
-    response.headers.set('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
-    response.headers.set('Cross-Origin-Embedder-Policy', 'unsafe-none');
+  if (p.startsWith('/portal-premium')) {
+    res.headers.set('Cross-Origin-Opener-Policy', 'same-origin');
+    res.headers.set('Cross-Origin-Embedder-Policy', 'require-corp');
+  } else if (p.startsWith('/portal')) {
+    res.headers.set('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+    res.headers.set('Cross-Origin-Embedder-Policy', 'unsafe-none');
   }
-  
-  return response;
+
+  return res;
 }
 
 export const config = {
-  matcher: ['/portal', '/portal-premium'],
+  matcher: ['/portal', '/portal/:path*', '/portal-premium', '/portal-premium/:path*'],
 };
