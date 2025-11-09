@@ -5,29 +5,32 @@ const premiumOrigins = [
 ];
 
 export function middleware(request: NextRequest) {
-  if (request.nextUrl.pathname.startsWith('/portal')) {
-    
-    const requestOrigin = request.headers.get('Origin');
-
-    const headers = new Headers();
-    
-    headers.set('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
-    headers.set('Cross-Origin-Embedder-Policy', 'unsafe-none');
-
-    if (requestOrigin && premiumOrigins.includes(requestOrigin)) {
-      headers.set('Cross-Origin-Opener-Policy', 'same-origin');
-      headers.set('Cross-Origin-Embedder-Policy', 'require-corp');
-    }
-
-    const response = NextResponse.next();
-    headers.forEach((value, key) => {
-      response.headers.set(key, value);
-    });
-    
-    return response;
+  if (!request.nextUrl.pathname.startsWith('/portal')) {
+    return NextResponse.next();
   }
 
-  return NextResponse.next();
+  const response = NextResponse.next();
+  const requestOrigin = request.headers.get('Origin');
+
+  response.headers.set('Access-Control-Allow-Origin', '*');
+  response.headers.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+  response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  response.headers.set('Content-Security-Policy', 'frame-ancestors *');
+
+  
+  let coep = 'unsafe-none';
+  let coop = 'same-origin-allow-popups';
+
+  if (requestOrigin && premiumOrigins.includes(requestOrigin)) {
+    coep = 'require-corp';
+    coop = 'same-origin';
+  }
+  
+  response.headers.set('Cross-Origin-Embedder-Policy', coep);
+  response.headers.set('Cross-Origin-Opener-Policy', coop);
+
+  return response;
 }
 
 export const config = {
