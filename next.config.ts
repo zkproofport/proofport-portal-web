@@ -8,12 +8,6 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   reactStrictMode: true,
-  async rewrites() {
-    return [
-      { source: '/portal-iso', destination: '/portal' },
-      { source: '/portal-iso/:path*', destination: '/portal/:path*' },
-    ];
-  },
   // async headers() {
   //   return [
   //     {
@@ -30,7 +24,7 @@ const nextConfig: NextConfig = {
   //         { key: 'Cross-Origin-Embedder-Policy', value: 'unsafe-none' },
   //       ],
   //     },
-  //   ];
+  //   ];ㅎ
   // },
 
   webpack: (config, { webpack, isServer }) => {
