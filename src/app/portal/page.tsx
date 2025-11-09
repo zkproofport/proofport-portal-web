@@ -15,6 +15,28 @@ import type {
   LogType 
 } from "../../lib/circuits/types";
 
+const PREMIUM_PARENTS = new Set<string>([
+  'https://proofport-demo.netlify.app',
+  // 'https://another-premium.example'
+]);
+
+function getParentOrigin(): string {
+  try {
+    return new URL(document.referrer || '').origin || '';
+  } catch {
+    return '';
+  }
+}
+
+function computeThreads(): { threads: number; allowThreads: boolean; parentOrigin: string; crossIso: boolean } {
+  const parentOrigin = getParentOrigin();
+  const crossIso = (globalThis as any).crossOriginIsolated === true;
+  const hasSAB = typeof (globalThis as any).SharedArrayBuffer !== 'undefined';
+  const allowThreads = hasSAB && crossIso && PREMIUM_PARENTS.has(parentOrigin);
+  const cores = Math.min((navigator.hardwareConcurrency || 2), 8);
+  return { threads: allowThreads ? cores : 1, allowThreads, parentOrigin, crossIso };
+}
+
 const GENERIC_STAGES = [
   'VALIDATING INPUT', 
   'LOADING ARTIFACTS', 
@@ -168,13 +190,17 @@ export default function PortalPage() {
       if (!rpcUrl) {
         throw new Error("NEXT_PUBLIC_BASE_RPC_URL is not defined in .env.local");
       }
-      
+
+      const { threads, allowThreads, parentOrigin, crossIso } = computeThreads();
+      appendLog(`[ENV] parent=${parentOrigin || '—'}, crossOriginIsolated=${crossIso}, threads=${threads}`, "note");
+
       const context: PortalContext = {
         address,
         walletClient,
         rpcUrl,
         origin,
         nonce,
+        ...( { threads } as any ),
       };
 
       const { proof, publicInputs } = await circuitModule.prove(context, log);

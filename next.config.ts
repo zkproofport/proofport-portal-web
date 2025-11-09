@@ -8,25 +8,30 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   reactStrictMode: true,
-
-  async headers() {
+  async rewrites() {
     return [
-      {
-        source: "/:path*",
-        headers: [
-          { key: "Cross-Origin-Embedder-Policy", value: "require-corp" },
-          { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
-        ],
-      },
-      {
-        source: '/portal',
-        headers: [
-          { key: 'Cross-Origin-Opener-Policy', value: 'same-origin-allow-popups' },
-          { key: 'Cross-Origin-Embedder-Policy', value: 'unsafe-none' },
-        ],
-      },
+      { source: '/portal-iso', destination: '/portal' },
+      { source: '/portal-iso/:path*', destination: '/portal/:path*' },
     ];
   },
+  // async headers() {
+  //   return [
+  //     {
+  //       source: "/:path*",
+  //       headers: [
+  //         { key: "Cross-Origin-Embedder-Policy", value: "require-corp" },
+  //         { key: "Cross-Origin-Opener-Policy", value: "same-origin" },
+  //       ],
+  //     },
+  //     {
+  //       source: '/portal',
+  //       headers: [
+  //         { key: 'Cross-Origin-Opener-Policy', value: 'same-origin-allow-popups' },
+  //         { key: 'Cross-Origin-Embedder-Policy', value: 'unsafe-none' },
+  //       ],
+  //     },
+  //   ];
+  // },
 
   webpack: (config, { webpack, isServer }) => {
     config.experiments = {

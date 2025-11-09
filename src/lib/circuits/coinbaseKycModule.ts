@@ -293,7 +293,7 @@ export const coinbaseKycModule: CircuitModule = {
       const noir = new Noir(metadata);
       
       log.append("Initializing UltraHonk backend...", "info");
-      const backend = new UltraHonkBackend(metadata.bytecode, { threads: 4 });
+      const backend = new UltraHonkBackend(metadata.bytecode, { threads: (ctx as any).threads ?? 1 });
 
       log.append("Executing circuit to get witness...", "info");
       const { witness } = await noir.execute(circuitInput);
