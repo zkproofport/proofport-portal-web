@@ -47,7 +47,7 @@ export default function Landing() {
         <footer className="footer" role="contentinfo" aria-label="site footer">
           <span>© {new Date().getFullYear()} zkProofport</span>
           <span>•</span>
-          <span><strong>Coming soon</strong> — private beta</span>
+          <span>Coming soon — private beta</span>
           <span>•</span>
           <span>X: <a href="https://x.com/zkproofport">@zkproofport</a></span>
         </footer>

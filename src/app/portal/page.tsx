@@ -3,34 +3,90 @@
 import { useEffect, useRef, useState } from "react";
 import { useAccount, useWalletClient } from "wagmi";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { ethers } from "ethers";
-import { Noir } from "@noir-lang/noir_js";
-import { UltraHonkBackend } from "@aztec/bb.js";
 import { Sparkles, CheckCircle, Cpu, ShieldCheck, Loader2 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { resolveCircuit } from "../../lib/circuits/registry";
+import type { 
+  CircuitModule, 
+  Step, 
+  PortalContext, 
+  Logger, 
+  LogType 
+} from "../../lib/circuits/types";
 
-const STEPS = [
-  { action: "Connecting wallet", done: "Wallet connected" },
-  { action: "Fetching KYC attestation", done: "KYC attestation fetched" },
-  { action: "Extracting calldata from tx", done: "Calldata extracted" },
-  { action: "Generating digest from calldata", done: "Digest generated" },
-  { action: "Signing digest and recovering public key", done: "User signature verified" },
-  { action: "Generating ZK proof", done: "ZK proof generated" },
+const GENERIC_STAGES = [
+  'VALIDATING INPUT', 
+  'LOADING ARTIFACTS', 
+  'EXECUTING CIRCUIT', 
+  'GENERATING PROOF',
+  'FINALIZING',
 ];
 
-const COINBASE_CONTRACT = "0x357458739F90461b99789350868CD7CF330Dd7EE";
-const ETH_SIGNED_PREFIX = "\x19Ethereum Signed Message:\n32";
-const CIRCUIT_URL =
-  "https://raw.githubusercontent.com/hsy822/zk-coinbase-attestor/develop/packages/circuit/target/zk_coinbase_attestor.json";
+const GENERIC_ACTIONS = [
+  'VERIFYING', 'DERIVING', 'HASHING', 'CHECKING', 'ASSERTING',
+  'PARSING', 'EXTRACTING', 'CALCULATING', 'DECODING',
+  'BUILDING', 'COMPILING', 'READING',
+];
+
+const generateRandomHex = (length: number) => {
+  let hex = '0x';
+  const chars = '0123456789abcdef';
+  for (let i = 0; i < length; i++) {
+    hex += chars[Math.floor(Math.random() * chars.length)];
+  }
+  return hex;
+};
+
+const ZkCircuitAnimator = () => {
+  const [line, setLine] = useState('');
+  const [stageIndex, setStageIndex] = useState(0);
+
+  useEffect(() => {
+    const stageInterval = setInterval(() => {
+      setStageIndex((prev) => {
+        const lastIndex = GENERIC_STAGES.length - 1;
+        if (prev === lastIndex) {
+          return lastIndex; 
+        }
+        return prev + 1;
+      });
+    }, 2000); 
+
+    return () => clearInterval(stageInterval);
+  }, []);
+
+  useEffect(() => {
+    const lineInterval = setInterval(() => {
+      const stage = GENERIC_STAGES[stageIndex];
+      const action = GENERIC_ACTIONS[Math.floor(Math.random() * GENERIC_ACTIONS.length)];
+      const hex = generateRandomHex(8);
+
+      setLine(`>> [${stage}] ${action}... ${hex}`);
+    }, 300);
+
+    return () => clearInterval(lineInterval);
+  }, [stageIndex]);
+
+  return (
+    <div className="log-circuit-effect">
+      {line}
+    </div>
+  );
+};
 
 export default function PortalPage() {
   const [loading, setLoading] = useState(false);
   const [currentStep, setCurrentStep] = useState<number | null>(null);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
-  const [logs, setLogs] = useState<{ text: string; type: "info" | "success" | "error" | "highlight" | "note"; interactive?: boolean }[]>([]);
+  const [logs, setLogs] = useState<{ text: string; type: LogType; interactive?: boolean }[]>([]);
   const [proofResult, setProofResult] = useState<null | { proof: any; publicInputs: string[]; meta: any }>(null);
+  
   const [fromSdk, setFromSdk] = useState(false);
+  const [isProving, setIsProving] = useState(false);
+
+  const [circuitModule, setCircuitModule] = useState<CircuitModule | null>(null);
+  const [steps, setSteps] = useState<Step[]>([]); 
 
   const terminalEndRef = useRef<HTMLDivElement>(null);
   const { isConnected, address } = useAccount();
@@ -40,12 +96,22 @@ export default function PortalPage() {
   const params = typeof window !== "undefined" ? new URLSearchParams(window.location.search) : new URLSearchParams();
   const origin = params.get("origin");
   const nonce = params.get("nonce");
+  const circuitId = params.get("circuitId"); 
 
   useEffect(() => {
-    if (origin && nonce) {
+    if (origin && nonce && circuitId) {
       setFromSdk(true);
+      const module = resolveCircuit(circuitId);
+      if (module) {
+        setCircuitModule(module);
+        setSteps(module.steps); 
+      } else {
+        appendLog(`Error: Unknown circuitId "${circuitId}"`, "error");
+      }
+    } else {
+      setFromSdk(false);
     }
-  }, [origin, nonce]); 
+  }, [origin, nonce, circuitId]); 
 
   useEffect(() => {
     if (isConnected) setCompletedSteps([0]); 
@@ -55,12 +121,13 @@ export default function PortalPage() {
     terminalEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [logs]);
 
-  const appendLog = (text: string, type: "info" | "success" | "error" | "highlight" | "note" = "info", interactive = false) =>
+  const appendLog = (text: string, type: LogType = "info", interactive = false) =>
     setLogs((prev) => [...prev, { text, type, interactive }]);
 
-  const updateLastLog = (text: string, type: "info" | "success" | "error" | "highlight" | "note" = "info") =>
+  const updateLastLog = (text: string, type: LogType = "info") =>
     setLogs((prev) => {
       const next = [...prev];
+      if (next.length === 0) return prev; 
       next[next.length - 1] = { ...next[next.length - 1], text, type };
       return next;
     });
@@ -73,9 +140,9 @@ export default function PortalPage() {
         openConnectModal?.();
         return;
       }
-      if (!fromSdk) {
-        appendLog("Portal is read-only in web mode. Open via SDK.", "error");
-        return;
+      if (!circuitModule || !origin || !nonce) {
+        appendLog("Portal is read-only or session is invalid.", "error");
+        return; 
       }
 
       setLoading(true);
@@ -83,115 +150,56 @@ export default function PortalPage() {
       setLogs([]);
       setCompletedSteps([]);
       setProofResult(null);
+      setIsProving(false); 
 
-      let attestation: any;
-      let tx: any;
-      let calldata: Uint8Array;
-      let digest: string, rawDigest: string;
-      let userX: Uint8Array, userY: Uint8Array, sigUser: ethers.Signature, userAddress: string;
-
-      const step = async (i: number, fn: () => Promise<void>) => {
-        setCurrentStep(i);
-        appendLog(STEPS[i].action + "...", "info");
-        await fn();
-        markStepComplete(i);
-        appendLog(`✔ ${STEPS[i].done}`, "success");
+      const log: Logger = {
+        append: (msg, type, interactive) => {
+          if (msg.startsWith("Generating ZK proof")) setIsProving(true);
+          appendLog(msg, type, interactive);
+        },
+        updateLast: (msg, type) => {
+          if (msg.includes("ZK proof generated")) setIsProving(false);
+          updateLastLog(msg, type);
+        },
+        markStep: markStepComplete,
       };
 
-      await step(0, async () => {
-        appendLog(`Wallet: ${address}`, "info");
-      });
+      const rpcUrl = process.env.NEXT_PUBLIC_BASE_RPC_URL as string;
+      if (!rpcUrl) {
+        throw new Error("NEXT_PUBLIC_BASE_RPC_URL is not defined in .env.local");
+      }
+      
+      const context: PortalContext = {
+        address,
+        walletClient,
+        rpcUrl,
+        origin,
+        nonce,
+      };
 
-      await step(1, async () => {
-        attestation = await fetchKycAttestation(address!);
-        if (!attestation) throw new Error("No valid KYC attestation found.");
-        appendLog("Attestation tx: " + attestation.txid, "info");
-      });
+      const { proof, publicInputs } = await circuitModule.prove(context, log);
 
-      await step(2, async () => {
-        tx = await fetchRawTx(attestation.txid);
-        let calldataHex: string = tx.input;
-        if (calldataHex.length < 74) calldataHex = calldataHex.padEnd(74, "0");
-        calldata = ethers.getBytes(calldataHex.slice(0, 74));
-        appendLog("Extracted calldata (" + calldata.length + " bytes)", "info");
-      });
+      const meta = {
+        origin,
+        timestamp: Math.floor(Date.now() / 1000),
+        nonce,
+        circuitId, 
+      };
 
-      await step(3, async () => {
-        rawDigest = ethers.keccak256(calldata);
-        digest = ethers.keccak256(ethers.concat([ethers.toUtf8Bytes(ETH_SIGNED_PREFIX), ethers.getBytes(rawDigest)]));
-        appendLog("Generated Ethereum-signed digest from calldata", "info");
-      });
-
-      await step(4, async () => {
-        const signer = await new ethers.BrowserProvider(walletClient!).getSigner();
-        const sigUserRaw = await walletClient!.signMessage({
-          account: signer.address as `0x${string}`,
-          message: { raw: rawDigest as `0x${string}` },
-        });
-        sigUser = ethers.Signature.from(sigUserRaw);
-
-        const pubKeyHex = ethers.SigningKey.recoverPublicKey(digest, sigUser);
-        const pubKeyBytes = ethers.getBytes(pubKeyHex);
-        userX = pubKeyBytes.slice(1, 33);
-        userY = pubKeyBytes.slice(33);
-
-        userAddress = signer.address;
-        appendLog("Recovered public key from user signature", "info");
-      });
-
-      await step(5, async () => {
-        const circuitInput = {
-          calldata: Array.from(calldata),
-          contract_address: Array.from(ethers.getBytes(COINBASE_CONTRACT)),
-          user_address: Array.from(ethers.getBytes(userAddress)),
-          digest: Array.from(ethers.getBytes(digest)),
-          user_sig: Array.from(new Uint8Array([...ethers.getBytes(sigUser.r), ...ethers.getBytes(sigUser.s)])),
-          user_pubkey_x: Array.from(userX),
-          user_pubkey_y: Array.from(userY),
-        };
-
-        const metaRes = await fetch(CIRCUIT_URL);
-        const metadata = await metaRes.json();
-        const noir = new Noir(metadata);
-        const backend = new UltraHonkBackend(metadata.bytecode, { threads: 4 });
-
-        const { witness } = await noir.execute(circuitInput);
-
-        const start = Date.now();
-        const proof = await backend.generateProof(witness, { keccak: true });
-        const duration = ((Date.now() - start) / 1000).toFixed(1);
-
-        updateLastLog(`✔ ZK Proof generated (${duration}s)`, "highlight");
-        appendLog(`# A zero-knowledge proof verifying your Coinbase KYC attestation was successfully generated.`, "note");
-        appendLog(`# Entirely inside your browser memory. It was never stored or uploaded.`, "note");
-        appendLog(`# This proof will be sent just once to the originating dApp for verification via postMessage.`, "note");
-        appendLog(`# Afterwards it is discarded. Your wallet & onchain history remain private.`, "note");
-        appendLog(``, "info", true);
-
-        const meta = {
-          origin,
-          timestamp: Math.floor(Date.now() / 1000),
-          nonce,
-        };
-
-        setProofResult({
-          proof: proof.proof,
-          publicInputs: proof.publicInputs,
-          meta,
-        });
+      setProofResult({
+        proof, 
+        publicInputs,
+        meta
       });
 
       setCurrentStep(null);
     } catch (err: any) {
       appendLog(`${err?.message || "Unknown error"}`, "error");
+      setIsProving(false); 
     } finally {
       setLoading(false);
+      setIsProving(false);
     }
-  };
-
-  const handleCloseRequest = () => {
-    console.log("[PORTAL] Close button clicked. Sending close request to parent.");
-    window.parent.postMessage({ type: "zk-coinbase-close-request" }, origin as any);
   };
 
   const sendProofToDappAndClose = () => {
@@ -201,10 +209,10 @@ export default function PortalPage() {
     }
 
     const msg = {
-      type: "zk-coinbase-proof",
+      type: "zkp-proof", 
       proof: proofResult.proof,
       publicInputs: proofResult.publicInputs,
-      meta: proofResult.meta,
+      meta: proofResult.meta, 
     };
 
     const targetOrigin = proofResult.meta.origin;
@@ -221,7 +229,6 @@ export default function PortalPage() {
     } catch (error) {
       console.error("[PORTAL] Failed to send message:", error);
     }
-
   };
 
   const modePill = fromSdk ? "SDK Session" : "Read-only (Web)";
@@ -229,25 +236,6 @@ export default function PortalPage() {
 
   return (
     <div className="portal-wrap">
-      <button 
-        onClick={handleCloseRequest}
-        title="Close"
-        style={{
-          position: 'absolute',
-          top: '15px',
-          right: '20px',
-          background: 'transparent',
-          border: 'none',
-          fontSize: '28px',
-          color: '#888',
-          cursor: 'pointer',
-          lineHeight: '1',
-          padding: '0',
-          zIndex: 10
-        }}
-      >
-        &times;
-      </button>
       <div className="portal-topbar">
         <div className="brand">
           <Image src="/logo.png" alt="" width={28} height={28} style={{ borderRadius: 8 }} />
@@ -262,14 +250,17 @@ export default function PortalPage() {
       {fromSdk ? (
         <div className="portal-grid">
           <section className="panel" aria-label="Run panel">
-            <div className="eyebrow" style={{ marginBottom: 10 }}>Proof Portal</div>
-            <h2 className="text-xl">Private Coinbase KYC Verification</h2>
+            <div className="eyebrow" style={{ marginBottom: 10 }}>
+              {circuitModule?.eyebrow || "Proof Portal"}
+            </div>
+            <h2 className="text-xl">
+              {circuitModule?.title || "Loading circuit..."}
+            </h2>
             <p className="sub text-xs">
-              Prove identity and eligibility without exposing your wallet or personal data. Proofs are generated locally and
-              only cryptographic results leave the browser.
+              {circuitModule?.description || "Loading description..."}
             </p>
             <ul className="step-list text-xs">
-              {STEPS.map((s, i) => {
+              {steps.map((s, i) => {
                 const done = completedSteps.includes(i);
                 const active = currentStep === i;
                 return (
@@ -284,8 +275,8 @@ export default function PortalPage() {
               <button
                 onClick={handleProve}
                 className="btn btn-primary btn-lg"
-                disabled={!fromSdk || loading}
-                title={fromSdk ? "Generate proof" : "Open via SDK to enable"}
+                disabled={!fromSdk || loading || !circuitModule}
+                title={fromSdk && circuitModule ? "Generate proof" : "Open via SDK to enable"}
               >
                 {!isConnected ? "Connect Wallet" : loading ? "Generating ZK Proof..." : "Generate ZK Proof"}
               </button>
@@ -302,6 +293,7 @@ export default function PortalPage() {
               const cls = log.type === "success" ? "log-success" : log.type === "error" ? "log-error" : log.type === "highlight" ? "log-highlight" : log.type === "note" ? "log-note" : "log-info";
               return <div key={i} className={cls}>{log.text}</div>;
             })}
+            {isProving && <ZkCircuitAnimator />}
             <div ref={terminalEndRef} />
             {logs.some((l) => l.interactive) && proofResult && (
               <button onClick={sendProofToDappAndClose} className="btn btn-primary btn-lg" style={{ width: "100%", marginTop: 14 }}>
@@ -324,7 +316,7 @@ export default function PortalPage() {
             <h2 className="text-xl" style={{ color: 'white' }}>This is the zkProofport Portal</h2>
             <p className="sub text-xs" style={{ maxWidth: '650px', margin: '16px auto 0' }}>
               This is a secure environment for generating private, zero-knowledge proofs for various applications. 
-              It can only be activated when accessed from an integrated dApp using the <strong>zkProofport SDK</strong>.
+              It can only be activated when accessed from an integrated dApp using the **zkProofport SDK**.
             </p>
             <div className="portal-actions" style={{ justifyContent: 'center', marginTop: '24px' }}>
               <Link className="btn btn-ghost btn-lg" href="/">
@@ -338,7 +330,7 @@ export default function PortalPage() {
       <footer className="footer" role="contentinfo" aria-label="site footer">
         <span>© {new Date().getFullYear()} zkProofport</span>
         <span>•</span>
-        <span><strong>Coming soon</strong> — private beta</span>
+        <span>**Coming soon** — private beta</span>
         <span>•</span>
         <span>
           <ShieldCheck className="inline-block" style={{ width: 14, height: 14, verticalAlign: "-2px" }} />{" "}
@@ -349,58 +341,4 @@ export default function PortalPage() {
       </footer>
     </div>
   );
-}
-
-async function fetchKycAttestation(address: string): Promise<any> {
-  const now = Math.floor(Date.now() / 1000);
-  const query = `query GetAttestations($recipient: String!, $attester: String!, $schemaId: String!, $now: Int!) {
-    attestations(
-      where: {
-        recipient: { equals: $recipient }
-        schemaId: { equals: $schemaId }
-        attester: { equals: $attester }
-        revocationTime: { equals: 0 }
-        OR: [
-          { expirationTime: { equals: 0 } }
-          { expirationTime: { gt: $now } }
-        ]
-      }
-      orderBy: { time: desc }
-      take: 1
-    ) {
-      txid
-    }
-  }`;
-
-  const res = await fetch("https://base.easscan.org/graphql", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      query,
-      variables: {
-        recipient: address,
-        attester: COINBASE_CONTRACT,
-        schemaId: "0xf8b05c79f090979bf4a80270aba232dff11a10d9ca55c4f88de95317970f0de9",
-        now,
-      },
-    }),
-  });
-
-  const json = await res.json();
-  return json.data?.attestations?.[0] || null;
-}
-
-async function fetchRawTx(txHash: string): Promise<any> {
-  const res = await fetch(process.env.NEXT_PUBLIC_BASE_RPC_URL as string, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      jsonrpc: "2.0",
-      id: 1,
-      method: "eth_getTransactionByHash",
-      params: [txHash],
-    }),
-  });
-  const json = await res.json();
-  return json.result;
 }
