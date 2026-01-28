@@ -236,11 +236,6 @@ export default function PortalPage() {
 
   return (
     <div className="portal-wrap">
-      {/* Secure Domain Banner */}
-      <div className="bg-gradient-to-r from-green-600 to-emerald-600 text-white py-1 px-4 text-center text-xs font-medium flex items-center justify-center gap-2">
-        <span>🔒</span> Secure Portal — zkproofport.com
-      </div>
-      
       <div className="portal-topbar">
         <div className="brand">
           <Image src="/logo.png" alt="" width={28} height={28} style={{ borderRadius: 8 }} />
