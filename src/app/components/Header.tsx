@@ -7,7 +7,7 @@ export default function Header() {
       <div className="inner">
         <Link href="/" style={{ display:"flex", alignItems:"center", gap:12, textDecoration:"none" }}>
           <Image src="/logo.png" alt="" width={30} height={30} style={{ borderRadius:8 }} />
-          <span className="title">zkProofport</span>
+          <span className="title">ZKProofport</span>
         </Link>
       </div>
     </header>

@@ -1,5 +1,5 @@
 /* ================================
-   zkProofport — Global Styles (80% Scale)
+   ZKProofport — Global Styles (80% Scale)
    ================================ */
 
 /* ---- THEME TOKENS ---- */
@@ -293,9 +293,94 @@ h1{
   
   color: var(--gold); 
   opacity: 0.6;
-  
   font-size: clamp(1.125rem, 1.8vw, 1.25rem);
   line-height: 1.6;
   word-break: break-all; 
   overflow: hidden; 
+}
+
+/* ---- PORTAL TYPES (Landing) ---- */
+.portal-section{
+  margin-top: 2.5rem;
+}
+.portal-section-header{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 0.625rem;
+}
+.portal-count{
+  font-weight: 900;
+  font-size: var(--fs-xl);
+  color: #eef6ff;
+  letter-spacing: -0.01em;
+}
+.portal-count.accent{
+  color: var(--gold-2);
+}
+.portal-divider{
+  font-size: var(--fs-xl);
+  color: rgba(255,255,255,.3);
+  font-weight: 300;
+}
+.portal-section-sub{
+  text-align: center;
+  font-size: var(--fs-sm);
+  color: #a9bfd1;
+  line-height: 1.6;
+  margin: 0 0 1.25rem;
+}
+.portal-types{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+@media (max-width: 67.1875rem){
+  .portal-types{ grid-template-columns: 1fr; }
+}
+.portal-type-card{
+  position: relative;
+  border: 1.5px solid rgba(255,255,255,.14);
+  border-radius: 1.5625rem;
+  padding: 2rem 1.5rem 1.5rem;
+  background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+  display: flex; flex-direction: column; align-items: center; gap: 0.625rem;
+  text-align: center;
+  transition: transform .25s, border-color .25s, box-shadow .25s;
+}
+.portal-type-card:hover{
+  transform: translateY(-3px);
+  border-color: rgba(214,177,92,.35);
+  box-shadow: 0 1.25rem 3.125rem rgba(0,0,0,.3);
+}
+.pt-label{
+  font-weight: 800;
+  font-size: var(--fs-md);
+  color: #eef6ff;
+  letter-spacing: -0.01em;
+}
+.pt-desc{
+  font-size: var(--fs-sm);
+  color: #a9bfd1;
+  line-height: 1.5;
+}
+.pt-tag{
+  display: inline-block;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: #f0d488;
+  background: rgba(240,212,136,.10);
+  border: 1px solid rgba(240,212,136,.28);
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  margin-top: 0.375rem;
+}
+.btn-sm{
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.875rem;
+  font-size: var(--fs-sm);
+  margin-top: 0.375rem;
 }
