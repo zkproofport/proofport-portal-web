@@ -61,7 +61,7 @@ export default function Landing() {
                 <div className="portal-type-card">
                   <div className="pt-label">Mobile App</div>
                   <div className="pt-desc">Native iOS app with biometric authentication</div>
-                  <span className="pt-tag">Coming Soon</span>
+                  <a className="btn btn-primary btn-sm" href="https://stg-demo.zkproofport.app/" target="_blank" rel="noopener noreferrer">Live Demo</a>
                 </div>
                 <div className="portal-type-card">
                   <div className="pt-label">Prover Agent</div>
