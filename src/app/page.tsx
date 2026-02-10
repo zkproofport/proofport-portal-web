@@ -31,21 +31,32 @@ export default function Landing() {
 
             {/* Three Portal Types */}
             <div className="portal-section">
-              <div className="portal-section-header">
-                <span className="portal-count">3 Portals</span>
-                <span className="portal-divider">·</span>
-                <span className="portal-count">1 SDK</span>
-                <span className="portal-divider">·</span>
-                <span className="portal-count accent">Any DApp</span>
+              <div className="portal-hero">
+                <div className="portal-stat">
+                  <span className="portal-stat-num">3</span>
+                  <span className="portal-stat-label">Portals</span>
+                </div>
+                <span className="portal-hero-divider">×</span>
+                <a className="portal-stat portal-stat--link" href="https://www.npmjs.com/package/@zkproofport/sdk" target="_blank" rel="noopener noreferrer">
+                  <span className="portal-stat-num">1</span>
+                  <span className="portal-stat-label">SDK&nbsp;↗</span>
+                </a>
+                <span className="portal-hero-divider">=</span>
+                <div className="portal-stat portal-stat--accent">
+                  <span className="portal-stat-num">∞</span>
+                  <span className="portal-stat-label">DApps</span>
+                </div>
               </div>
               <p className="portal-section-sub">
-                One SDK powers all three portals. Integrate once your DApp gets web, mobile, and agent-based proof generation out of the box.
+                One SDK powers all three portals. Integrate once, your DApp gets web, mobile, and agent-based proof generation out of the box.
               </p>
               <div className="portal-types">
                 <div className="portal-type-card">
                   <div className="pt-label">Web Portal</div>
                   <div className="pt-desc">Browser-based proof generation & verification</div>
-                  <Link className="btn btn-primary btn-sm" href="/portal">Open</Link>
+                  <div className="pt-actions">
+                    <a className="btn btn-primary btn-sm" href="https://proofport-demo.netlify.app/" target="_blank" rel="noopener noreferrer">Live Demo</a>
+                  </div>
                 </div>
                 <div className="portal-type-card">
                   <div className="pt-label">Mobile App</div>
@@ -60,17 +71,6 @@ export default function Landing() {
               </div>
             </div>
 
-            <div className="cta-row">
-              <Link className="btn btn-primary" href="/portal">Open Proof Portal</Link>
-              <Link 
-                className="btn btn-primary" 
-                href="https://proofport-demo.netlify.app/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Try Live Demo
-              </Link>
-            </div>
           </section>
           <span className="shine" />
         </main>
