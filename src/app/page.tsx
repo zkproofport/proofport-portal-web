@@ -104,18 +104,20 @@ export default function Landing() {
                 Browser-based proof generation &amp; on-chain verification. Zero backend, zero data exposure.
               </p>
               <div className="flex items-center gap-6 mt-3">
+                <div className="flex gap-4 flex-wrap">
                 <a
                   className="font-mono text-[1.2rem] sm:text-[1.3rem] font-bold tracking-wider text-gold no-underline border-b-[1.5px] border-gold pb-0.5 transition-all duration-200 hover:text-gold-2 hover:border-gold-2 hover:pb-1"
-                  href="https://proofport-demo.netlify.app/" target="_blank" rel="noopener noreferrer" itemProp="url"
+                  href="https://stg-demo.zkproofport.app/" target="_blank" rel="noopener noreferrer" itemProp="url"
                 >
                   [ Live Demo ]
                 </a>
                 <a
-                  className="font-mono text-[1.2rem] sm:text-[1.3rem] font-bold tracking-wider text-gold-2/70 no-underline border-b-[1.5px] border-gold-2/30 pb-0.5 transition-all duration-200 hover:text-gold hover:border-gold hover:pb-1"
+                  className="font-mono text-[1.2rem] sm:text-[1.3rem] font-bold tracking-wider text-gold no-underline border-b-[1.5px] border-gold pb-0.5 transition-all duration-200 hover:text-gold-2 hover:border-gold-2 hover:pb-1"
                   href="https://www.npmjs.com/package/@zkproofport/sdk" target="_blank" rel="noopener noreferrer"
                 >
                   [ SDK ]
                 </a>
+              </div>
               </div>
             </article>
 
@@ -135,12 +137,20 @@ export default function Landing() {
               <p className="font-mono text-[1.5rem] sm:text-[1.6rem] text-muted leading-[1.7] m-0 max-w-[50ch]" itemProp="description">
                 Native iOS &amp; Android with biometric auth &amp; client-side proving. Proof on the go, anywhere.
               </p>
-              <a
-                className="font-mono text-[1.2rem] sm:text-[1.3rem] font-bold tracking-wider text-gold no-underline border-b-[1.5px] border-gold pb-0.5 self-start mt-3 transition-all duration-200 hover:text-gold-2 hover:border-gold-2 hover:pb-1"
-                href="https://stg-demo.zkproofport.app/" target="_blank" rel="noopener noreferrer" itemProp="url"
-              >
-                [ Live Demo ]
-              </a>
+              <div className="flex gap-4 flex-wrap self-start mt-3">
+                <a
+                  className="font-mono text-[1.2rem] sm:text-[1.3rem] font-bold tracking-wider text-gold no-underline border-b-[1.5px] border-gold pb-0.5 transition-all duration-200 hover:text-gold-2 hover:border-gold-2 hover:pb-1"
+                  href="https://stg-demo.zkproofport.app/" target="_blank" rel="noopener noreferrer" itemProp="url"
+                >
+                  [ Live Demo ]
+                </a>
+                <a
+                  className="font-mono text-[1.2rem] sm:text-[1.3rem] font-bold tracking-wider text-gold no-underline border-b-[1.5px] border-gold pb-0.5 transition-all duration-200 hover:text-gold-2 hover:border-gold-2 hover:pb-1"
+                  href="https://www.npmjs.com/package/@zkproofport-app/sdk" target="_blank" rel="noopener noreferrer"
+                >
+                  [ SDK ]
+                </a>
+              </div>
             </article>
 
             {/* Prover Agent */}
