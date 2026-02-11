@@ -107,7 +107,7 @@ export default function Landing() {
                 <div className="flex gap-4 flex-wrap">
                 <a
                   className="font-mono text-[1.2rem] sm:text-[1.3rem] font-bold tracking-wider text-gold no-underline border-b-[1.5px] border-gold pb-0.5 transition-all duration-200 hover:text-gold-2 hover:border-gold-2 hover:pb-1"
-                  href="https://stg-demo.zkproofport.app/" target="_blank" rel="noopener noreferrer" itemProp="url"
+                  href="https://proofport-demo.netlify.app/" target="_blank" rel="noopener noreferrer" itemProp="url"
                 >
                   [ Live Demo ]
                 </a>
