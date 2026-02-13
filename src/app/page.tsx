@@ -222,6 +222,21 @@ export default function Landing() {
               </div>
               <span className="font-mono text-[1rem] sm:text-[1.1rem] font-semibold tracking-[0.08em] uppercase text-gold/50 shrink-0">Identity</span>
             </article>
+
+            {/* CIP-3 */}
+            <article className="relative bg-[#0e1219] p-7 sm:p-9 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 transition-all duration-300 hover:bg-[#131a24]">
+              <div className="flex items-center gap-4 shrink-0">
+                <span className="font-mono text-[1.6rem] sm:text-[1.8rem] font-black text-gold tracking-tight">CIP-3</span>
+                <span className="font-mono text-[0.95rem] font-bold tracking-[0.1em] uppercase px-3 py-1 rounded-full border border-[#fbbf24]/40 text-[#fbbf24] bg-[#fbbf24]/10">Draft</span>
+              </div>
+              <div className="flex-1">
+                <h3 className="font-serif text-[1.8rem] sm:text-[2.2rem] text-cream m-0 tracking-tight leading-tight">Corporate Domain Attestation</h3>
+                <p className="font-mono text-[1.2rem] sm:text-[1.3rem] text-muted m-0 mt-2 leading-[1.6]">
+                  Prove organizational membership via Google Workspace JWT without revealing your email or identity.
+                </p>
+              </div>
+              <span className="font-mono text-[1rem] sm:text-[1.1rem] font-semibold tracking-[0.08em] uppercase text-gold/50 shrink-0">Identity</span>
+            </article>
           </div>
 
           {/* CIP Link */}
