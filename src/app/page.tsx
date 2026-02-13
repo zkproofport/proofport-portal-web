@@ -82,7 +82,7 @@ export default function Landing() {
           <h2 className="font-serif text-[clamp(3.2rem,5vw,5rem)] font-normal text-cream mb-5 leading-[1.1]">
             Three portals. One infrastructure.
           </h2>
-          <p className="font-mono text-[1.4rem] sm:text-[1.5rem] text-muted max-w-[60ch] mb-14 sm:mb-16 leading-[1.7]">
+          <p className="font-mono text-[1.4rem] sm:text-[1.5rem] text-muted mb-14 sm:mb-16 leading-[1.7]">
             Web, mobile, and autonomous agent — pick your interface, same privacy guarantees.
           </p>
 
@@ -179,6 +179,60 @@ export default function Landing() {
           </nav>
         </section>
 
+        {/* ── CIP — Circuit Improvement Proposals ── */}
+        <section className="max-w-[1100px] mx-auto px-6 sm:px-8 lg:px-10 py-24 sm:py-32" aria-label="Circuit Improvement Proposals">
+          <div className="font-mono text-[1.2rem] sm:text-[1.4rem] font-semibold tracking-[0.15em] uppercase text-gold mb-4">
+            Circuit Standards
+          </div>
+          <h2 className="font-serif text-[clamp(3.2rem,5vw,5rem)] font-normal text-cream mb-5 leading-[1.1]">
+            CIP — open standards for ZK circuits.
+          </h2>
+          <p className="font-mono text-[1.4rem] sm:text-[1.5rem] text-muted max-w-[100ch] mb-14 sm:mb-16 leading-[1.7]">
+            Like EIPs for Ethereum, CIPs define a transparent governance for proposing, reviewing, and publishing zero-knowledge circuits.
+          </p>
+
+          {/* CIP Cards */}
+          <div className="flex flex-col gap-[1.5px] bg-gold-line overflow-hidden mb-10">
+            {/* CIP-1 */}
+            <article className="relative bg-[#0e1219] p-7 sm:p-9 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 transition-all duration-300 hover:bg-[#131a24]">
+              <div className="flex items-center gap-4 shrink-0">
+                <span className="font-mono text-[1.6rem] sm:text-[1.8rem] font-black text-gold tracking-tight">CIP-1</span>
+                <span className="font-mono text-[0.95rem] font-bold tracking-[0.1em] uppercase px-3 py-1 rounded-full border border-[#60a5fa]/40 text-[#60a5fa] bg-[#60a5fa]/10">Review</span>
+              </div>
+              <div className="flex-1">
+                <h3 className="font-serif text-[1.8rem] sm:text-[2.2rem] text-cream m-0 tracking-tight leading-tight">Coinbase KYC Attestation</h3>
+                <p className="font-mono text-[1.2rem] sm:text-[1.3rem] text-muted m-0 mt-2 leading-[1.6]">
+                  Prove KYC status without revealing your address, transaction, or identity.
+                </p>
+              </div>
+              <span className="font-mono text-[1rem] sm:text-[1.1rem] font-semibold tracking-[0.08em] uppercase text-gold/50 shrink-0">Identity</span>
+            </article>
+
+            {/* CIP-2 */}
+            <article className="relative bg-[#0e1219] p-7 sm:p-9 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 transition-all duration-300 hover:bg-[#131a24]">
+              <div className="flex items-center gap-4 shrink-0">
+                <span className="font-mono text-[1.6rem] sm:text-[1.8rem] font-black text-gold tracking-tight">CIP-2</span>
+                <span className="font-mono text-[0.95rem] font-bold tracking-[0.1em] uppercase px-3 py-1 rounded-full border border-[#60a5fa]/40 text-[#60a5fa] bg-[#60a5fa]/10">Review</span>
+              </div>
+              <div className="flex-1">
+                <h3 className="font-serif text-[1.8rem] sm:text-[2.2rem] text-cream m-0 tracking-tight leading-tight">Coinbase Country Attestation</h3>
+                <p className="font-mono text-[1.2rem] sm:text-[1.3rem] text-muted m-0 mt-2 leading-[1.6]">
+                  Prove country inclusion or exclusion without revealing which country you are from.
+                </p>
+              </div>
+              <span className="font-mono text-[1rem] sm:text-[1.1rem] font-semibold tracking-[0.08em] uppercase text-gold/50 shrink-0">Identity</span>
+            </article>
+          </div>
+
+          {/* CIP Link */}
+          <a
+            className="font-mono text-[1.2rem] sm:text-[1.3rem] font-bold tracking-wider text-gold no-underline border-b-[1.5px] border-gold pb-0.5 transition-all duration-200 hover:text-gold-2 hover:border-gold-2 hover:pb-1"
+            href="https://github.com/zkproofport/CIPs" target="_blank" rel="noopener noreferrer"
+          >
+            [ View All CIPs on GitHub ]
+          </a>
+        </section>
+
         {/* ── SEPARATOR ── */}
         <div className="h-px max-w-[700px] mx-auto bg-gradient-to-r from-transparent via-gold-line to-transparent" />
 
@@ -190,20 +244,24 @@ export default function Landing() {
           <h2 className="font-serif text-[clamp(3.2rem,5vw,5rem)] font-normal text-cream mb-14 sm:mb-16 leading-[1.1]">
             Backed by the ecosystem.
           </h2>
-          <div className="inline-flex flex-wrap items-center justify-center gap-14 sm:gap-24">
-            <div className="flex items-center gap-5">
-              <Image src="/base-logo.png" alt="Base" width={64} height={64} className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl" />
-              <div className="text-left">
-                <div className="font-mono text-[1.5rem] sm:text-[1.7rem] font-bold text-cream tracking-wide leading-tight">Base Batches 002</div>
-                <div className="font-mono text-[1.15rem] sm:text-[1.3rem] text-gold-2 tracking-wide mt-1.5">Currently Incubating</div>
-              </div>
+          <div className="flex flex-col sm:flex-row items-stretch justify-center gap-6 sm:gap-8 max-w-[800px] mx-auto">
+            {/* Base Grant Card */}
+            <div className="flex-1 bg-gradient-to-b from-[#0e1219] to-[#111827] border border-gold-line rounded-2xl p-8 sm:p-10 flex flex-col items-center text-center gap-4 transition-all duration-300 hover:border-gold/30 hover:bg-[#131a24]">
+              <Image src="/base-logo.png" alt="Base" width={72} height={72} className="w-16 h-16 sm:w-[4.5rem] sm:h-[4.5rem] rounded-xl" />
+              <div className="font-serif text-[1.8rem] sm:text-[2.2rem] font-normal text-cream tracking-tight leading-tight">Base Batches 002</div>
+              <div className="font-mono text-[1.2rem] sm:text-[1.3rem] text-gold-2 tracking-wide">Builder Track — Currently Incubating</div>
+              <p className="font-mono text-[1.1rem] sm:text-[1.2rem] text-muted leading-[1.6] mt-1">
+                Selected Top 50 out of 900+ teams
+              </p>
             </div>
-            <div className="flex items-center gap-5">
-              <Image src="/aztec-logo.svg" alt="Aztec" width={64} height={64} className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl" />
-              <div className="text-left">
-                <div className="font-mono text-[1.5rem] sm:text-[1.7rem] font-bold text-cream tracking-wide leading-tight">Aztec Noir Grant</div>
-                <div className="font-mono text-[1.15rem] sm:text-[1.3rem] text-muted tracking-wider uppercase mt-1.5">ZK DSL Pioneer</div>
-              </div>
+            {/* Aztec Grant Card */}
+            <div className="flex-1 bg-gradient-to-b from-[#0e1219] to-[#111827] border border-gold-line rounded-2xl p-8 sm:p-10 flex flex-col items-center text-center gap-4 transition-all duration-300 hover:border-gold/30 hover:bg-[#131a24]">
+              <Image src="/aztec-logo.svg" alt="Aztec" width={72} height={72} className="w-16 h-16 sm:w-[4.5rem] sm:h-[4.5rem] rounded-xl" />
+              <div className="font-serif text-[1.8rem] sm:text-[2.2rem] font-normal text-cream tracking-tight leading-tight">Aztec Noir Grant</div>
+              <div className="font-mono text-[1.2rem] sm:text-[1.3rem] text-gold-2 tracking-wide">ZK Circuit Development</div>
+              <p className="font-mono text-[1.1rem] sm:text-[1.2rem] text-muted leading-[1.6] mt-1">
+                Pioneer of the Noir ZK DSL ecosystem
+              </p>
             </div>
           </div>
         </section>
