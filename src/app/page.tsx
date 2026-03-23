@@ -285,7 +285,7 @@ export default function Landing() {
             </div>
             {/* Aztec Grant Card */}
             <div className="flex-1 bg-gradient-to-b from-[#0e1219] to-[#111827] border border-gold-line rounded-2xl p-8 sm:p-10 flex flex-col items-center text-center gap-4 transition-all duration-300 hover:border-gold/30 hover:bg-[#131a24]">
-              <Image src="/aztec-logo.svg" alt="Aztec" width={72} height={72} className="w-16 h-16 sm:w-[4.5rem] sm:h-[4.5rem] rounded-xl" />
+              <Image src="/aztec.png" alt="Aztec" width={72} height={72} className="w-16 h-16 sm:w-[4.5rem] sm:h-[4.5rem] rounded-xl" />
               <div className="font-serif text-[1.8rem] sm:text-[2.2rem] font-normal text-cream tracking-tight leading-tight">Aztec Noir Grant</div>
               <div className="font-mono text-[1.2rem] sm:text-[1.3rem] text-gold-2 tracking-wide">ZK Circuit Development</div>
               <p className="font-mono text-[1.1rem] sm:text-[1.2rem] text-muted leading-[1.6] mt-1">
