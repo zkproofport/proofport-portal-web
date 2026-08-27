@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
   },
   description:
-    "Privacy-preserving proofs that let applications and AI agents verify user conditions without collecting the underlying private data.",
+    "Turn trusted credentials into composable zero-knowledge proofs for Ethereum applications and AI agents.",
   keywords: [
     "zero knowledge proof",
     "ZK proof",
@@ -66,7 +66,7 @@ export const metadata: Metadata = {
     siteName: "ZKProofport",
     title: "ZKProofport | Composable Privacy Infrastructure",
     description:
-      "Privacy-preserving proofs for applications and AI agents, built on open specifications, Noir circuits, and EVM verifiers.",
+      "Turn trusted credentials into composable zero-knowledge proofs for Ethereum applications and AI agents.",
     url: "https://zkproofport.com",
   },
   twitter: {
@@ -75,7 +75,7 @@ export const metadata: Metadata = {
     creator: "@zkproofport",
     title: "ZKProofport | Composable Privacy Infrastructure",
     description:
-      "Privacy-preserving proofs for applications and AI agents, built on open specifications, Noir circuits, and EVM verifiers.",
+      "Turn trusted credentials into composable zero-knowledge proofs for Ethereum applications and AI agents.",
   },
   alternates: {
     canonical: "https://zkproofport.com",

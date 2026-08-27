@@ -216,7 +216,7 @@ export default function Landing() {
             <article className="bg-[#0e1219] p-8 sm:p-10">
               <div className={`${sectionLabel} mb-5`}>Coinbase EAS + Base</div>
               <p className="font-mono text-[1.5rem] sm:text-[1.7rem] text-gold-2 leading-[1.8] mb-5">Coinbase / EAS → ZKProofport private proof → application / agent</p>
-              <p className={bodyCopy}>Existing trusted credentials become usable in privacy-preserving ways. This does not imply Coinbase endorsement.</p>
+              <p className={bodyCopy}>Existing Coinbase EAS credentials become privacy-preserving predicates that applications and agents can verify and act on.</p>
             </article>
             <article className="bg-[#0e1219] p-8 sm:p-10">
               <div className={`${sectionLabel} mb-5`}>Composable Conditions</div>
@@ -231,33 +231,73 @@ export default function Landing() {
         <section className="max-w-[1180px] mx-auto px-6 sm:px-8 lg:px-10 py-24 sm:py-32" aria-labelledby="open-heading">
           <div className={`${sectionLabel} mb-5`}>Open Source + Security</div>
           <h2 id="open-heading" className={`${sectionTitle} mb-7`}>Inspect the proof. Not the promise.</h2>
-          <p className={`${bodyCopy} max-w-[72ch] mb-14`}>Working open-source infrastructure currently undergoing hardening before broader rollout.</p>
+          <p className={`${bodyCopy} max-w-[76ch] mb-8`}>The open-source privacy stack is live today. Broader consumer distribution is intentionally controlled while privacy-critical components are hardened and prepared for independent review.</p>
+          <p className="font-mono text-[1.5rem] sm:text-[1.7rem] leading-[1.7] text-gold-2 border-l-2 border-gold pl-6 mb-14 max-w-[86ch]">
+            Live today: open-source Noir circuits, Base Mainnet and Ethereum Sepolia verifiers, published SDK and MCP packages, and independently inspectable deployment records.
+          </p>
 
           <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8">
             <nav className="grid sm:grid-cols-2 gap-px bg-gold-line" aria-label="Open-source repositories">
               {[
-                ["CIPs", "Open specifications", "https://github.com/zkproofport/CIPs"],
-                ["Circuits", "Noir + Solidity verifiers", "https://github.com/zkproofport/circuits"],
-                ["Mobile App", "On-device proof generation", "https://github.com/zkproofport/proofport-app"],
-                ["SDK", "Application integration", "https://github.com/zkproofport/proofport-app-sdk"],
-                ["Agent", "MCP / A2A / x402 / TEE", "https://github.com/zkproofport/proofport-ai"],
-                ["Deployments", "Reference verifier records", "https://github.com/zkproofport/circuits/tree/main/deployments"],
-              ].map(([name, description, href]) => (
-                <a key={name} className="bg-[#0e1219] p-7 no-underline transition-colors hover:bg-[#131a24]" href={href} target="_blank" rel="noopener noreferrer">
-                  <strong className="block font-serif text-[2.5rem] sm:text-[2.9rem] font-normal text-cream mb-3">{name} ↗</strong>
-                  <span className="text-[1.4rem] sm:text-[1.6rem] text-[#9aa4b4] leading-[1.5]">{description}</span>
-                </a>
+                { name: "CIPs", description: "Open specifications / project-level RFCs", href: "https://github.com/zkproofport/CIPs", meta: "Public repository" },
+                { name: "Circuits", description: "Noir reference circuits + Solidity / EVM verifiers", href: "https://github.com/zkproofport/circuits", meta: "Public repository" },
+                { name: "Mobile App", description: "On-device proof generation", href: "https://github.com/zkproofport/proofport-app", meta: "Public repository" },
+                {
+                  name: "SDK",
+                  description: "Application integration",
+                  href: "https://github.com/zkproofport/proofport-app-sdk",
+                  meta: "License: MIT",
+                  links: [
+                    ["App SDK · npm", "https://www.npmjs.com/package/@zkproofport-app/sdk"],
+                    ["Web SDK · npm", "https://www.npmjs.com/package/@zkproofport/sdk"],
+                  ],
+                },
+                {
+                  name: "Agent",
+                  description: "MCP / A2A / x402 / TEE proving",
+                  href: "https://www.npmjs.com/package/@zkproofport-ai/sdk",
+                  meta: "npm package license: MIT",
+                  links: [
+                    ["Agent SDK · npm", "https://www.npmjs.com/package/@zkproofport-ai/sdk"],
+                    ["Agent MCP · npm", "https://www.npmjs.com/package/@zkproofport-ai/mcp"],
+                  ],
+                },
+                {
+                  name: "Deployments",
+                  description: "Base Mainnet + Ethereum Sepolia verifier records",
+                  href: "https://github.com/zkproofport/circuits/tree/main/deployments",
+                  meta: "Independently inspectable",
+                  links: [
+                    ["Base Mainnet", "https://github.com/zkproofport/circuits/tree/main/deployments/8453"],
+                    ["Ethereum Sepolia", "https://github.com/zkproofport/circuits/tree/main/deployments/11155111"],
+                  ],
+                },
+              ].map((resource) => (
+                <article key={resource.name} className="bg-[#0e1219] p-7 transition-colors hover:bg-[#131a24]">
+                  <a className="block font-serif text-[2.5rem] sm:text-[2.9rem] font-normal text-cream no-underline mb-3" href={resource.href} target="_blank" rel="noopener noreferrer">{resource.name} ↗</a>
+                  <p className="text-[1.4rem] sm:text-[1.6rem] text-[#9aa4b4] leading-[1.5] m-0">{resource.description}</p>
+                  <span className="block font-mono text-[1.3rem] sm:text-[1.4rem] text-[#7e8999] mt-4">{resource.meta}</span>
+                  {resource.links && (
+                    <div className="flex flex-wrap gap-x-5 gap-y-2 mt-4">
+                      {resource.links.map(([label, href]) => (
+                        <a key={href} className="font-mono text-[1.3rem] sm:text-[1.4rem] font-bold text-gold-2 no-underline border-b border-gold/30 hover:border-gold-2" href={href} target="_blank" rel="noopener noreferrer">{label} ↗</a>
+                      ))}
+                    </div>
+                  )}
+                </article>
               ))}
             </nav>
 
             <aside className="bg-[#142019] border-l-4 border-[#6fb98f] p-8 sm:p-10">
               <div className="font-mono text-[1.4rem] font-bold tracking-[0.1em] uppercase text-[#8bd3a8] mb-5">Security before scale</div>
-              <p className="text-[1.7rem] sm:text-[1.9rem] text-cream leading-[1.65] mb-8">Privacy infrastructure is only useful when its assumptions and implementation can be inspected.</p>
+              <p className="text-[1.7rem] sm:text-[1.9rem] text-cream leading-[1.65] mb-8">The stack is live; consumer distribution is expanding deliberately while privacy-critical components are hardened and independently reviewed.</p>
               <dl className="m-0">
+                <div className="flex justify-between gap-5 py-4 border-b border-white/10 text-[1.5rem] sm:text-[1.7rem]"><dt className="text-[#9aa4b4]">Open-source stack</dt><dd className="m-0 text-[#8bd3a8] font-semibold">Live</dd></div>
                 <div className="flex justify-between gap-5 py-4 border-b border-white/10 text-[1.5rem] sm:text-[1.7rem]"><dt className="text-[#9aa4b4]">Internal review</dt><dd className="m-0 text-[#8bd3a8] font-semibold">In progress</dd></div>
                 <div className="flex justify-between gap-5 py-4 border-b border-white/10 text-[1.5rem] sm:text-[1.7rem]"><dt className="text-[#9aa4b4]">External audit</dt><dd className="m-0 text-[#8bd3a8] font-semibold">Planned</dd></div>
-                <div className="flex justify-between gap-5 py-4 border-b border-white/10 text-[1.5rem] sm:text-[1.7rem]"><dt className="text-[#9aa4b4]">Broader rollout</dt><dd className="m-0 text-[#8bd3a8] font-semibold">Gated</dd></div>
+                <div className="flex justify-between gap-5 py-4 border-b border-white/10 text-[1.5rem] sm:text-[1.7rem]"><dt className="text-[#9aa4b4]">Consumer rollout</dt><dd className="m-0 text-[#8bd3a8] font-semibold">Controlled</dd></div>
               </dl>
+              <p className="text-[1.5rem] sm:text-[1.7rem] text-[#9aa4b4] leading-[1.65] mt-7 mb-0">CIPs document trust assumptions and limitations; circuit source and deployment records remain open for review.</p>
             </aside>
           </div>
         </section>
@@ -275,7 +315,7 @@ export default function Landing() {
             </article>
             <article className="bg-[#0e1219] p-8 sm:p-10 flex gap-6 items-start">
               <Image src="/aztec.png" alt="Aztec" width={64} height={64} className="w-16 h-16 rounded-xl shrink-0" />
-              <div><h3 className="font-serif text-[2.7rem] sm:text-[3.2rem] text-cream font-normal mb-3">Aztec / Noir</h3><p className="text-[1.5rem] sm:text-[1.7rem] text-[#9aa4b4] leading-[1.6]">Aztec Noir Grant · Support for implementing the Coinbase KYC Noir circuit PoC</p></div>
+              <div><h3 className="font-serif text-[2.7rem] sm:text-[3.2rem] text-cream font-normal mb-3">Aztec / Noir</h3><p className="text-[1.5rem] sm:text-[1.7rem] text-[#9aa4b4] leading-[1.6]">Coinbase KYC Noir PoC implementation support</p></div>
             </article>
             <article className="bg-[#0e1219] p-8 sm:p-10 flex gap-6 items-start">
               <Image src="/synthesis-logo.png" alt="The Synthesis Hackathon" width={64} height={64} className="w-16 h-16 object-cover shrink-0" />
@@ -288,7 +328,7 @@ export default function Landing() {
           </div>
 
           <p className={`${bodyCopy} max-w-[72ch] mx-auto mt-12`}>
-            <strong className="text-cream">OpenStoa</strong> is a reference application exploring a privacy-preserving shared space where humans and AI agents use ZKProofport proofs for access. <ExternalLink href="https://github.com/zkproofport/openstoa">Inspect OpenStoa ↗</ExternalLink>
+            <strong className="text-cream">OpenStoa</strong> is a reference application built with ZKProofport to explore a privacy-preserving shared space for humans and AI agents. <ExternalLink href="https://github.com/zkproofport/openstoa">Inspect OpenStoa ↗</ExternalLink>
           </p>
         </section>
 
