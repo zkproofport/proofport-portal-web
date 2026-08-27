@@ -239,9 +239,9 @@ export default function Landing() {
           <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8">
             <nav className="grid sm:grid-cols-2 gap-px bg-gold-line" aria-label="Open-source repositories">
               {[
-                { name: "CIPs", description: "Open specifications / project-level RFCs", href: "https://github.com/zkproofport/CIPs", meta: "Public repository" },
-                { name: "Circuits", description: "Noir reference circuits + Solidity / EVM verifiers", href: "https://github.com/zkproofport/circuits", meta: "Public repository" },
-                { name: "Mobile App", description: "On-device proof generation", href: "https://github.com/zkproofport/proofport-app", meta: "Public repository" },
+                { name: "CIPs", description: "Open specifications / project-level RFCs", href: "https://github.com/zkproofport/CIPs", meta: "License: CC0" },
+                { name: "Circuits", description: "Noir reference circuits + Solidity / EVM verifiers", href: "https://github.com/zkproofport/circuits", meta: "License: MIT" },
+                { name: "Mobile App", description: "On-device proof generation", href: "https://github.com/zkproofport/proofport-app", meta: "License: MIT" },
                 {
                   name: "SDK",
                   description: "Application integration",
@@ -256,7 +256,7 @@ export default function Landing() {
                   name: "Agent",
                   description: "MCP / A2A / x402 / TEE proving",
                   href: "https://www.npmjs.com/package/@zkproofport-ai/sdk",
-                  meta: "npm package license: MIT",
+                  meta: "License: MIT",
                   links: [
                     ["Agent SDK · npm", "https://www.npmjs.com/package/@zkproofport-ai/sdk"],
                     ["Agent MCP · npm", "https://www.npmjs.com/package/@zkproofport-ai/mcp"],
