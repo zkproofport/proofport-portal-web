@@ -1,5 +1,38 @@
 import Image from "next/image";
 import Header from "./components/Header";
+import DisclosureDemo from "./components/DisclosureDemo";
+import ArchitectureFlow from "./components/ArchitectureFlow";
+
+const sectionLabel = "font-mono text-[1.4rem] sm:text-[1.6rem] font-semibold tracking-[0.14em] uppercase text-gold";
+const sectionTitle = "font-serif text-[clamp(4rem,6vw,6.4rem)] font-normal text-cream leading-[1.08] tracking-tight";
+const bodyCopy = "text-[1.7rem] sm:text-[1.9rem] leading-[1.7] text-[#9aa4b4]";
+const linkStyle = "font-mono text-[1.4rem] sm:text-[1.6rem] font-bold tracking-wide text-gold no-underline border-b-[1.5px] border-gold pb-1 transition-colors hover:text-gold-2 hover:border-gold-2";
+
+const currentProofs = [
+  {
+    cip: "CIP-1",
+    title: "Coinbase KYC",
+    copy: "Prove the relevant KYC condition while keeping the source wallet and raw attestation information private.",
+  },
+  {
+    cip: "CIP-2",
+    title: "Coinbase Country",
+    copy: "Prove that a private country satisfies an allowed or restricted-country policy without revealing the actual country.",
+  },
+  {
+    cip: "CIP-3",
+    title: "OIDC Domain",
+    copy: "Prove Google Workspace or Microsoft 365 organization membership without revealing the user’s email or JWT.",
+  },
+] as const;
+
+function ExternalLink({ href, children, className = linkStyle }: { href: string; children: React.ReactNode; className?: string }) {
+  return <a className={className} href={href} target="_blank" rel="noopener noreferrer">{children}</a>;
+}
+
+function Separator() {
+  return <div className="h-px max-w-[760px] mx-auto bg-gradient-to-r from-transparent via-gold-line to-transparent" />;
+}
 
 export default function Landing() {
   return (
@@ -8,348 +41,291 @@ export default function Landing() {
       <div className="noise" aria-hidden="true" />
       <div className="dot-matrix" aria-hidden="true" />
 
-      <div className="relative z-1 min-h-screen w-full">
-
-        {/* ── HERO — full viewport, centered ── */}
+      <main className="relative z-1 min-h-screen w-full">
         <section
-          className="animate-fade-slide min-h-screen flex flex-col justify-center items-center relative px-6 sm:px-8 lg:px-10 text-center"
-          role="main"
+          className="animate-fade-slide min-h-screen flex flex-col justify-center items-center relative px-6 sm:px-8 lg:px-10 pt-24 pb-20 text-center"
           aria-labelledby="hero-heading"
         >
-          <div className="font-mono text-[1.2rem] sm:text-[1.4rem] font-semibold tracking-[0.15em] uppercase text-gold mb-8 sm:mb-10">
-            <span className="text-muted font-light" aria-hidden="true">// </span>
+          <div className={`${sectionLabel} mb-8`}>
+            <span className="text-[#7e8999] font-light" aria-hidden="true">{"// "}</span>
             ZKProofport
           </div>
 
           <h1
             id="hero-heading"
-            className="font-serif font-normal text-[clamp(4rem,9vw,8.5rem)] leading-[1.02] tracking-tight text-cream mb-8"
+            className="font-serif font-normal text-[clamp(5.2rem,10vw,10rem)] leading-[0.98] tracking-tight text-cream mb-10"
           >
-            Privacy-first<br />
-            trust infrastructure<br />
-            <em className="italic text-gold-2">for Web3.</em>
+            Privacy-preserving proofs,<br />
+            <em className="italic text-gold-2">for any app.</em>
           </h1>
 
-          <p className="text-[clamp(1.7rem,2.5vw,2.2rem)] leading-[1.65] text-muted max-w-[58ch] mx-auto mb-10">
-            To prove trust, you must sacrifice privacy.{" "}
-            <span className="text-cream font-medium">ZKProofport breaks this paradox</span>{" "}
-            with zero-knowledge proofs.
+          <p className="text-[clamp(1.9rem,2.4vw,2.5rem)] leading-[1.6] text-[#9aa4b4] max-w-[68ch] mx-auto mb-12">
+            Applications and agents can verify user conditions without collecting the underlying private data.
           </p>
 
-          <p className="font-serif italic text-[clamp(2.4rem,4vw,3.6rem)] text-gold-2/80 tracking-wide mb-0">
-            privacy is normal.
-          </p>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-5 sm:gap-8">
+            <a className="min-w-[19rem] bg-gold text-[#11161d] px-7 py-4 text-[1.6rem] font-bold no-underline transition-colors hover:bg-gold-2" href="#proofs">
+              Explore proofs
+            </a>
+            <ExternalLink href="https://github.com/zkproofport">View source ↗</ExternalLink>
+          </div>
 
-          {/* Scroll indicator */}
-          <div className="absolute bottom-10 font-mono text-[1.1rem] text-muted tracking-[0.15em] animate-pulse">
+          <div className="absolute bottom-8 font-mono text-[1.3rem] text-[#7e8999] tracking-[0.15em] animate-pulse" aria-hidden="true">
             ↓ SCROLL
           </div>
         </section>
 
-        {/* ── SEPARATOR ── */}
-        <div className="h-px max-w-[700px] mx-auto bg-gradient-to-r from-transparent via-gold-line to-transparent" />
+        <Separator />
 
-        {/* ── WHAT WE BUILD ── */}
-        <section className="max-w-[1100px] mx-auto px-6 sm:px-8 lg:px-10 py-24 sm:py-32 text-center">
-          <div className="font-mono text-[1.2rem] sm:text-[1.4rem] font-semibold tracking-[0.15em] uppercase text-gold mb-4">
-            What We Build
+        <section className="max-w-[1180px] mx-auto px-6 sm:px-8 lg:px-10 py-24 sm:py-32" aria-labelledby="what-heading">
+          <div className="text-center max-w-[900px] mx-auto">
+            <div className={`${sectionLabel} mb-5`}>What We Build</div>
+            <h2 id="what-heading" className={`${sectionTitle} mb-8`}>Composable privacy infrastructure.</h2>
+            <p className={`${bodyCopy} max-w-[62ch] mx-auto`}>
+              Turn trusted credentials and private conditions into minimal, EVM-verifiable statements for people, applications, and autonomous agents.
+            </p>
           </div>
-          <h2 className="font-serif text-[clamp(3.2rem,5vw,5rem)] font-normal text-cream mb-6 leading-[1.1]">
-            Zero-knowledge proofs for everyone.
-          </h2>
-          <p className="font-mono text-[1.4rem] sm:text-[1.5rem] text-muted max-w-[60ch] mx-auto mb-14 leading-[1.7]">
-            A general-purpose ZK proof portal &amp; SDK — apps, DApps, and AI agents generate privacy-preserving proofs client-side. 0 bytes exposed.
+
+          <DisclosureDemo />
+
+          <div className="grid sm:grid-cols-2 gap-px bg-gold-line mt-12">
+            <article className="bg-[#0e1219] p-8 sm:p-10">
+              <h3 className="font-serif text-[3rem] sm:text-[3.6rem] text-cream font-normal mb-4">For users</h3>
+              <p className={bodyCopy}>Reveal less, retain more privacy, and avoid repeatedly sharing raw credentials.</p>
+            </article>
+            <article className="bg-[#0e1219] p-8 sm:p-10">
+              <h3 className="font-serif text-[3rem] sm:text-[3.6rem] text-cream font-normal mb-4">For services</h3>
+              <p className={bodyCopy}>Collect and store less sensitive data while still verifying the condition an action requires.</p>
+            </article>
+          </div>
+
+          <blockquote className="font-serif text-[2.4rem] sm:text-[3.2rem] leading-[1.4] text-gold-2/90 max-w-[32ch] mt-14 sm:mt-18 ml-auto border-l-2 border-gold pl-7">
+            Don’t store sensitive data better. Avoid receiving what you never needed.
+          </blockquote>
+        </section>
+
+        <Separator />
+
+        <section className="max-w-[1180px] mx-auto px-6 sm:px-8 lg:px-10 py-24 sm:py-32" aria-labelledby="portals-heading">
+          <div className={`${sectionLabel} mb-5`}>Proof Portals</div>
+          <h2 id="portals-heading" className={`${sectionTitle} mb-7`}>One infrastructure. Distinct proving paths.</h2>
+          <p className={`${bodyCopy} max-w-[76ch] mb-14 sm:mb-16`}>
+            Browser, mobile, and managed agent proving use the same open proof core. Agent proving remains a distinct TEE-based trust model.
           </p>
 
-          {/* Tags */}
-          <ul className="flex flex-wrap justify-center gap-3 sm:gap-3.5 list-none p-0 m-0" aria-label="Circuit use cases">
-            {["KYC", "Country", "Credit Score", "Age Gating", "RWA", "AI Economy"].map((tag) => (
-              <li key={tag} className="font-mono text-[1.05rem] sm:text-[1.2rem] font-semibold tracking-[0.08em] uppercase text-cream/80 px-4 sm:px-5 py-2.5 sm:py-3 border-[1.5px] border-gold-line bg-gold/[0.03] hover:bg-gold/[0.08] hover:border-gold/30 transition-all duration-300">
-                {tag}
-              </li>
+          <div className="flex flex-col gap-px bg-gold-line">
+            <article className="relative bg-[#0e1219] p-8 sm:p-10 overflow-hidden">
+              <div className="absolute right-7 top-7 font-mono text-[1.3rem] font-bold tracking-[0.12em] text-gold uppercase">Human / Browser</div>
+              <h3 className="font-serif text-[3.2rem] sm:text-[4rem] text-cream font-normal mb-4">Web proof runner</h3>
+              <p className={`${bodyCopy} max-w-[64ch] mb-7`}>
+                A browser-based interface for supported proof generation and EVM verification flows, designed to be invoked by applications through the SDK.
+              </p>
+              <div className="flex flex-wrap gap-6">
+                <ExternalLink href="https://proofport-demo.netlify.app/">[ Live Demo ]</ExternalLink>
+                <ExternalLink href="https://www.npmjs.com/package/@zkproofport/sdk">[ SDK ]</ExternalLink>
+              </div>
+            </article>
+
+            <article className="relative bg-[#0e1219] p-8 sm:p-10 overflow-hidden">
+              <div className="absolute right-7 top-7 font-mono text-[1.3rem] font-bold tracking-[0.12em] text-[#7ea6d8] uppercase">Human / Local</div>
+              <h3 className="font-serif text-[3.2rem] sm:text-[4rem] text-cream font-normal mb-4">Mobile proving</h3>
+              <p className={`${bodyCopy} max-w-[64ch] mb-6`}>
+                Supported flows generate proofs on the user’s device with React Native, mopro, and Noir / UltraHonk. Private witness data can remain on device for these flows.
+              </p>
+              <p className="text-[1.5rem] sm:text-[1.7rem] text-[#7e8999] leading-[1.6] mb-7">
+                Built on mopro from Ethereum’s Privacy &amp; Scaling Explorations ecosystem.
+              </p>
+              <div className="flex flex-wrap gap-6">
+                <ExternalLink href="https://demo.zkproofport.app/">[ Live Demo ]</ExternalLink>
+                <ExternalLink href="https://github.com/zkproofport/proofport-app">[ Mobile App ]</ExternalLink>
+                <ExternalLink href="https://www.npmjs.com/package/@zkproofport-app/sdk">[ SDK ]</ExternalLink>
+              </div>
+            </article>
+
+            <article className="relative bg-[#0e1219] p-8 sm:p-10 overflow-hidden">
+              <div className="absolute right-7 top-7 font-mono text-[1.3rem] font-bold tracking-[0.12em] text-[#b99ce5] uppercase">Agent / TEE</div>
+              <h3 className="font-serif text-[3.2rem] sm:text-[4rem] text-cream font-normal mb-4">Programmatic agent proving</h3>
+              <p className={`${bodyCopy} max-w-[64ch] mb-5`}>
+                An agent should not need your full identity. It may only need to know whether KYC passed, a country is allowed, an organization matches, or an asset threshold is satisfied.
+              </p>
+              <p className="text-[1.5rem] sm:text-[1.7rem] text-[#7e8999] leading-[1.6] mb-7">
+                ERC-8004 discovery · MCP / A2A · x402 + USDC · end-to-end encrypted requests · AWS Nitro Enclave · EVM-verifiable result
+              </p>
+              <div className="flex flex-wrap gap-6">
+                <ExternalLink href="https://proveragent.eth.limo">[ Try Agent ]</ExternalLink>
+                <ExternalLink href="https://www.npmjs.com/package/@zkproofport-ai/mcp">[ MCP ]</ExternalLink>
+                <ExternalLink href="https://www.npmjs.com/package/@zkproofport-ai/sdk">[ SDK ]</ExternalLink>
+                <ExternalLink href="https://github.com/zkproofport/proofport-ai">[ Source ]</ExternalLink>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <Separator />
+
+        <section id="proofs" className="max-w-[1180px] mx-auto px-6 sm:px-8 lg:px-10 py-24 sm:py-32" aria-labelledby="proofs-heading">
+          <div className={`${sectionLabel} mb-5`}>Current Proof Catalog</div>
+          <h2 id="proofs-heading" className={`${sectionTitle} mb-7`}>Implemented proof profiles.</h2>
+          <p className={`${bodyCopy} max-w-[76ch] mb-14`}>
+            Current reference implementations are clearly separated from draft, experimental, and next-stage predicates.
+          </p>
+
+          <div className="flex flex-col gap-px bg-gold-line">
+            {currentProofs.map((proof) => (
+              <article key={proof.cip} className="group bg-[#0e1219] p-8 sm:p-10 grid md:grid-cols-[12rem_1fr_auto] gap-5 md:gap-8 items-center transition-colors hover:bg-[#131a24]">
+                <span className="font-mono text-[1.5rem] font-black text-gold tracking-wide">{proof.cip}</span>
+                <div>
+                  <h3 className="font-serif text-[2.8rem] sm:text-[3.4rem] text-cream font-normal mb-3">{proof.title}</h3>
+                  <p className={`${bodyCopy} max-w-[66ch]`}>{proof.copy}</p>
+                </div>
+                <span className="justify-self-start font-mono text-[1.3rem] sm:text-[1.4rem] font-bold tracking-[0.08em] uppercase px-4 py-2 border border-[#6fb98f]/40 text-[#8bd3a8] bg-[#6fb98f]/10">Review / Reference</span>
+              </article>
             ))}
-          </ul>
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-px bg-gold-line mt-8">
+            <article className="bg-[#11151d] p-8 sm:p-10">
+              <div className="font-mono text-[1.3rem] font-bold tracking-[0.1em] uppercase text-[#9aa4b4] mb-5">Draft / Experimental</div>
+              <p className="text-[1.7rem] sm:text-[1.9rem] text-cream leading-[1.7]">CIP-4 GIWA Dojang <span className="text-[#9aa4b4]">— Draft / PoC</span></p>
+              <p className="text-[1.7rem] sm:text-[1.9rem] text-cream leading-[1.7]">CIP-5 Korean Mobile ID <span className="text-[#9aa4b4]">— Draft / Experimental</span></p>
+            </article>
+            <article className="bg-[#11151d] p-8 sm:p-10 border-l-2 border-gold">
+              <div className="font-mono text-[1.3rem] font-bold tracking-[0.1em] uppercase text-gold mb-5">Next · Not shipped</div>
+              <h3 className="font-serif text-[2.8rem] sm:text-[3.4rem] text-cream font-normal mb-4">Balance / Asset Threshold</h3>
+              <p className={bodyCopy}>Prove that a wallet or account satisfies an asset threshold without exposing the exact balance or source wallet.</p>
+            </article>
+          </div>
+
+          <div className="mt-10">
+            <ExternalLink href="https://github.com/zkproofport/CIPs">[ View All CIPs on GitHub ]</ExternalLink>
+          </div>
         </section>
 
-        {/* ── SEPARATOR ── */}
-        <div className="h-px max-w-[700px] mx-auto bg-gradient-to-r from-transparent via-gold-line to-transparent" />
+        <Separator />
 
-        {/* ── PROOF PORTALS ── */}
-        <section className="max-w-[1100px] mx-auto px-6 sm:px-8 lg:px-10 py-24 sm:py-32" aria-label="Proof Portals">
-          <div className="font-mono text-[1.2rem] sm:text-[1.4rem] font-semibold tracking-[0.15em] uppercase text-gold mb-4">
-            Proof Portals
+        <section className="max-w-[1180px] mx-auto px-6 sm:px-8 lg:px-10 py-24 sm:py-32" aria-labelledby="architecture-heading">
+          <div className="text-center">
+            <div className={`${sectionLabel} mb-5`}>Architecture</div>
+            <h2 id="architecture-heading" className={`${sectionTitle} mb-7`}>From trusted data to usable proof.</h2>
+            <p className={`${bodyCopy} max-w-[72ch] mx-auto mb-14`}>CIPs define proof semantics, circuits implement them, and EVM verifiers make the result composable inside applications and agent actions.</p>
           </div>
-          <h2 className="font-serif text-[clamp(3.2rem,5vw,5rem)] font-normal text-cream mb-5 leading-[1.1]">
-            Three portals. One infrastructure.
-          </h2>
-          <p className="font-mono text-[1.4rem] sm:text-[1.5rem] text-muted mb-14 sm:mb-16 leading-[1.7]">
-            Web, mobile, and autonomous agent — pick your interface, same privacy guarantees.
+
+          <ArchitectureFlow />
+
+          <div className="grid lg:grid-cols-2 gap-px bg-gold-line mt-8">
+            <article className="bg-[#0e1219] p-8 sm:p-10">
+              <div className={`${sectionLabel} mb-5`}>Coinbase EAS + Base</div>
+              <p className="font-mono text-[1.5rem] sm:text-[1.7rem] text-gold-2 leading-[1.8] mb-5">Coinbase / EAS → ZKProofport private proof → application / agent</p>
+              <p className={bodyCopy}>Existing trusted credentials become usable in privacy-preserving ways. This does not imply Coinbase endorsement.</p>
+            </article>
+            <article className="bg-[#0e1219] p-8 sm:p-10">
+              <div className={`${sectionLabel} mb-5`}>Composable Conditions</div>
+              <p className="font-mono text-[1.5rem] sm:text-[1.7rem] text-gold-2 leading-[1.8] mb-5">KYC ✓ + Country ✓ + Balance ≥ X <span className="text-[#9aa4b4]">(future)</span> → eligible action</p>
+              <p className={bodyCopy}>Proofs can become conditions for access, agent actions, payments, and possible future trade, RWA, or financing flows.</p>
+            </article>
+          </div>
+        </section>
+
+        <Separator />
+
+        <section className="max-w-[1180px] mx-auto px-6 sm:px-8 lg:px-10 py-24 sm:py-32" aria-labelledby="open-heading">
+          <div className={`${sectionLabel} mb-5`}>Open Source + Security</div>
+          <h2 id="open-heading" className={`${sectionTitle} mb-7`}>Inspect the proof. Not the promise.</h2>
+          <p className={`${bodyCopy} max-w-[72ch] mb-14`}>Working open-source infrastructure currently undergoing hardening before broader rollout.</p>
+
+          <div className="grid lg:grid-cols-[1.1fr_0.9fr] gap-8">
+            <nav className="grid sm:grid-cols-2 gap-px bg-gold-line" aria-label="Open-source repositories">
+              {[
+                ["CIPs", "Open specifications", "https://github.com/zkproofport/CIPs"],
+                ["Circuits", "Noir + Solidity verifiers", "https://github.com/zkproofport/circuits"],
+                ["Mobile App", "On-device proof generation", "https://github.com/zkproofport/proofport-app"],
+                ["SDK", "Application integration", "https://github.com/zkproofport/proofport-app-sdk"],
+                ["Agent", "MCP / A2A / x402 / TEE", "https://github.com/zkproofport/proofport-ai"],
+                ["Deployments", "Reference verifier records", "https://github.com/zkproofport/circuits/tree/main/deployments"],
+              ].map(([name, description, href]) => (
+                <a key={name} className="bg-[#0e1219] p-7 no-underline transition-colors hover:bg-[#131a24]" href={href} target="_blank" rel="noopener noreferrer">
+                  <strong className="block font-serif text-[2.5rem] sm:text-[2.9rem] font-normal text-cream mb-3">{name} ↗</strong>
+                  <span className="text-[1.4rem] sm:text-[1.6rem] text-[#9aa4b4] leading-[1.5]">{description}</span>
+                </a>
+              ))}
+            </nav>
+
+            <aside className="bg-[#142019] border-l-4 border-[#6fb98f] p-8 sm:p-10">
+              <div className="font-mono text-[1.4rem] font-bold tracking-[0.1em] uppercase text-[#8bd3a8] mb-5">Security before scale</div>
+              <p className="text-[1.7rem] sm:text-[1.9rem] text-cream leading-[1.65] mb-8">Privacy infrastructure is only useful when its assumptions and implementation can be inspected.</p>
+              <dl className="m-0">
+                <div className="flex justify-between gap-5 py-4 border-b border-white/10 text-[1.5rem] sm:text-[1.7rem]"><dt className="text-[#9aa4b4]">Internal review</dt><dd className="m-0 text-[#8bd3a8] font-semibold">In progress</dd></div>
+                <div className="flex justify-between gap-5 py-4 border-b border-white/10 text-[1.5rem] sm:text-[1.7rem]"><dt className="text-[#9aa4b4]">External audit</dt><dd className="m-0 text-[#8bd3a8] font-semibold">Planned</dd></div>
+                <div className="flex justify-between gap-5 py-4 border-b border-white/10 text-[1.5rem] sm:text-[1.7rem]"><dt className="text-[#9aa4b4]">Broader rollout</dt><dd className="m-0 text-[#8bd3a8] font-semibold">Gated</dd></div>
+              </dl>
+            </aside>
+          </div>
+        </section>
+
+        <Separator />
+
+        <section className="max-w-[1180px] mx-auto px-6 sm:px-8 lg:px-10 py-24 sm:py-32 text-center" aria-labelledby="recognition-heading">
+          <div className={`${sectionLabel} mb-5`}>Ecosystem Recognition</div>
+          <h2 id="recognition-heading" className={`${sectionTitle} mb-14 sm:mb-16`}>Selected &amp; supported.</h2>
+
+          <div className="grid sm:grid-cols-2 gap-px bg-gold-line max-w-[980px] mx-auto text-left">
+            <article className="bg-[#0e1219] p-8 sm:p-10 flex gap-6 items-start">
+              <Image src="/base-logo.png" alt="Base" width={64} height={64} className="w-16 h-16 rounded-xl shrink-0" />
+              <div><h3 className="font-serif text-[2.7rem] sm:text-[3.2rem] text-cream font-normal mb-3">Base Batches 002</h3><p className="text-[1.5rem] sm:text-[1.7rem] text-[#9aa4b4] leading-[1.6]">Top 50 out of 900+ teams</p></div>
+            </article>
+            <article className="bg-[#0e1219] p-8 sm:p-10 flex gap-6 items-start">
+              <Image src="/aztec.png" alt="Aztec" width={64} height={64} className="w-16 h-16 rounded-xl shrink-0" />
+              <div><h3 className="font-serif text-[2.7rem] sm:text-[3.2rem] text-cream font-normal mb-3">Aztec / Noir</h3><p className="text-[1.5rem] sm:text-[1.7rem] text-[#9aa4b4] leading-[1.6]">Aztec Noir Grant · Support for implementing the Coinbase KYC Noir circuit PoC</p></div>
+            </article>
+            <article className="bg-[#0e1219] p-8 sm:p-10 flex gap-6 items-start">
+              <Image src="/synthesis-logo.png" alt="The Synthesis Hackathon" width={64} height={64} className="w-16 h-16 object-cover shrink-0" />
+              <div><h3 className="font-serif text-[2.7rem] sm:text-[3.2rem] text-cream font-normal mb-3">The Synthesis Hackathon</h3><p className="text-[1.5rem] sm:text-[1.7rem] text-[#9aa4b4] leading-[1.6]">OpenStoa · 1st Place in Agents That Keep Secrets</p></div>
+            </article>
+            <article className="bg-[#0e1219] p-8 sm:p-10 flex gap-6 items-start">
+              <Image src="/giwa-logo.svg" alt="GIWA" width={64} height={64} className="w-16 h-16 shrink-0" />
+              <div><h3 className="font-serif text-[2.7rem] sm:text-[3.2rem] text-cream font-normal mb-3">GIWA GASOK</h3><p className="text-[1.5rem] sm:text-[1.7rem] text-[#9aa4b4] leading-[1.6]">Selected for Phase 3 productization</p></div>
+            </article>
+          </div>
+
+          <p className={`${bodyCopy} max-w-[72ch] mx-auto mt-12`}>
+            <strong className="text-cream">OpenStoa</strong> is a reference application exploring a privacy-preserving shared space where humans and AI agents use ZKProofport proofs for access. <ExternalLink href="https://github.com/zkproofport/openstoa">Inspect OpenStoa ↗</ExternalLink>
           </p>
-
-          <nav className="flex flex-col gap-[1.5px] bg-gold-line overflow-hidden" aria-label="Portal types">
-            {/* Web Portal */}
-            <article
-              className="relative bg-[#0e1219] p-7 sm:p-9 flex flex-col gap-4 transition-all duration-300 hover:bg-[#131a24] overflow-hidden"
-              itemScope itemType="https://schema.org/SoftwareApplication"
-            >
-              <div className="absolute right-6 sm:right-10 top-1/2 -translate-y-1/2 -rotate-12 w-[8rem] h-[8rem] sm:w-[10rem] sm:h-[10rem] rounded-full border-[3px] border-gold/25 flex items-center justify-center pointer-events-none">
-                <div className="w-[6.4rem] h-[6.4rem] sm:w-[8rem] sm:h-[8rem] rounded-full border-[1.5px] border-gold/20 flex items-center justify-center">
-                  <span className="font-mono text-[1.4rem] sm:text-[1.7rem] font-black tracking-[0.15em] text-gold/20 uppercase">WEB</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <h3 className="font-serif text-[2.4rem] sm:text-[2.8rem] text-cream m-0 tracking-tight" itemProp="name">Web Portal</h3>
-              </div>
-              <p className="font-mono text-[1.5rem] sm:text-[1.6rem] text-muted leading-[1.7] m-0 max-w-[50ch]" itemProp="description">
-                Browser-based proof generation &amp; on-chain verification. Zero backend, zero data exposure.
-              </p>
-              <div className="flex items-center gap-6 mt-3">
-                <div className="flex gap-4 flex-wrap">
-                <a
-                  className="font-mono text-[1.2rem] sm:text-[1.3rem] font-bold tracking-wider text-gold no-underline border-b-[1.5px] border-gold pb-0.5 transition-all duration-200 hover:text-gold-2 hover:border-gold-2 hover:pb-1"
-                  href="https://proofport-demo.netlify.app/" target="_blank" rel="noopener noreferrer" itemProp="url"
-                >
-                  [ Live Demo ]
-                </a>
-                <a
-                  className="font-mono text-[1.2rem] sm:text-[1.3rem] font-bold tracking-wider text-gold no-underline border-b-[1.5px] border-gold pb-0.5 transition-all duration-200 hover:text-gold-2 hover:border-gold-2 hover:pb-1"
-                  href="https://www.npmjs.com/package/@zkproofport/sdk" target="_blank" rel="noopener noreferrer"
-                >
-                  [ SDK ]
-                </a>
-              </div>
-              </div>
-            </article>
-
-            {/* Mobile App */}
-            <article
-              className="relative bg-[#0e1219] p-7 sm:p-9 flex flex-col gap-4 transition-all duration-300 hover:bg-[#131a24] overflow-hidden"
-              itemScope itemType="https://schema.org/MobileApplication"
-            >
-              <div className="absolute right-6 sm:right-10 top-1/2 -translate-y-1/2 rotate-6 w-[8rem] h-[8rem] sm:w-[10rem] sm:h-[10rem] rounded-full border-[3px] border-[#60a5fa]/25 flex items-center justify-center pointer-events-none">
-                <div className="w-[6.4rem] h-[6.4rem] sm:w-[8rem] sm:h-[8rem] rounded-full border-[1.5px] border-[#60a5fa]/20 flex items-center justify-center">
-                  <span className="font-mono text-[1.2rem] sm:text-[1.5rem] font-black tracking-[0.12em] text-[#60a5fa]/20 uppercase">MOBILE</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <h3 className="font-serif text-[2.4rem] sm:text-[2.8rem] text-cream m-0 tracking-tight" itemProp="name">Mobile App</h3>
-              </div>
-              <p className="font-mono text-[1.5rem] sm:text-[1.6rem] text-muted leading-[1.7] m-0 max-w-[50ch]" itemProp="description">
-                Native iOS &amp; Android with biometric auth &amp; client-side proving. Proof on the go, anywhere.
-              </p>
-              <div className="flex gap-4 flex-wrap self-start mt-3">
-                <a
-                  className="font-mono text-[1.2rem] sm:text-[1.3rem] font-bold tracking-wider text-gold no-underline border-b-[1.5px] border-gold pb-0.5 transition-all duration-200 hover:text-gold-2 hover:border-gold-2 hover:pb-1"
-                  href="https://demo.zkproofport.app/" target="_blank" rel="noopener noreferrer" itemProp="url"
-                >
-                  [ Live Demo ]
-                </a>
-                <a
-                  className="font-mono text-[1.2rem] sm:text-[1.3rem] font-bold tracking-wider text-gold no-underline border-b-[1.5px] border-gold pb-0.5 transition-all duration-200 hover:text-gold-2 hover:border-gold-2 hover:pb-1"
-                  href="https://www.npmjs.com/package/@zkproofport-app/sdk" target="_blank" rel="noopener noreferrer"
-                >
-                  [ SDK ]
-                </a>
-              </div>
-            </article>
-
-            {/* Prover Agent */}
-            <article
-              className="relative bg-[#0e1219] p-7 sm:p-9 flex flex-col gap-4 transition-all duration-300 hover:bg-[#131a24] overflow-hidden"
-              itemScope itemType="https://schema.org/SoftwareApplication"
-            >
-              <div className="absolute right-6 sm:right-10 top-1/2 -translate-y-1/2 -rotate-6 w-[8rem] h-[8rem] sm:w-[10rem] sm:h-[10rem] rounded-full border-[3px] border-[#a78bfa]/25 flex items-center justify-center pointer-events-none">
-                <div className="w-[6.4rem] h-[6.4rem] sm:w-[8rem] sm:h-[8rem] rounded-full border-[1.5px] border-[#a78bfa]/20 flex items-center justify-center">
-                  <span className="font-mono text-[1.2rem] sm:text-[1.5rem] font-black tracking-[0.12em] text-[#a78bfa]/20 uppercase">AGENT</span>
-                </div>
-              </div>
-              <div className="flex items-center gap-4">
-                <h3 className="font-serif text-[2.4rem] sm:text-[2.8rem] text-cream m-0 tracking-tight" itemProp="name">AI Prover Agent</h3>
-              </div>
-              <p className="font-mono text-[1.5rem] sm:text-[1.6rem] text-muted leading-[1.7] m-0 max-w-[50ch]" itemProp="description">
-                Agent-to-agent proof delegation via ERC-8004, X402 micropayments &amp; TEE-secured proving.
-              </p>
-              <div className="flex gap-4 flex-wrap self-start mt-3">
-                <a
-                  className="font-mono text-[1.2rem] sm:text-[1.3rem] font-bold tracking-wider text-gold no-underline border-b-[1.5px] border-gold pb-0.5 transition-all duration-200 hover:text-gold-2 hover:border-gold-2 hover:pb-1"
-                  href="https://proveragent.eth.limo" target="_blank" rel="noopener noreferrer" itemProp="url"
-                >
-                  [ Visit ]
-                </a>
-                <a
-                  className="font-mono text-[1.2rem] sm:text-[1.3rem] font-bold tracking-wider text-gold no-underline border-b-[1.5px] border-gold pb-0.5 transition-all duration-200 hover:text-gold-2 hover:border-gold-2 hover:pb-1"
-                  href="https://www.npmjs.com/package/@zkproofport-ai/mcp" target="_blank" rel="noopener noreferrer"
-                >
-                  [ MCP ]
-                </a>
-                <a
-                  className="font-mono text-[1.2rem] sm:text-[1.3rem] font-bold tracking-wider text-gold no-underline border-b-[1.5px] border-gold pb-0.5 transition-all duration-200 hover:text-gold-2 hover:border-gold-2 hover:pb-1"
-                  href="https://www.npmjs.com/package/@zkproofport-ai/sdk" target="_blank" rel="noopener noreferrer"
-                >
-                  [ SDK ]
-                </a>
-              </div>
-            </article>
-          </nav>
         </section>
 
-        {/* ── CIP — Circuit Improvement Proposals ── */}
-        <section className="max-w-[1100px] mx-auto px-6 sm:px-8 lg:px-10 py-24 sm:py-32" aria-label="Circuit Improvement Proposals">
-          <div className="font-mono text-[1.2rem] sm:text-[1.4rem] font-semibold tracking-[0.15em] uppercase text-gold mb-4">
-            Circuit Standards
-          </div>
-          <h2 className="font-serif text-[clamp(3.2rem,5vw,5rem)] font-normal text-cream mb-5 leading-[1.1]">
-            CIP — open standards for ZK circuits.
-          </h2>
-          <p className="font-mono text-[1.4rem] sm:text-[1.5rem] text-muted max-w-[100ch] mb-14 sm:mb-16 leading-[1.7]">
-            Like EIPs for Ethereum, CIPs define a transparent governance for proposing, reviewing, and publishing zero-knowledge circuits.
-          </p>
+        <Separator />
 
-          {/* CIP Cards */}
-          <div className="flex flex-col gap-[1.5px] bg-gold-line overflow-hidden mb-10">
-            {/* CIP-1 */}
-            <article className="relative bg-[#0e1219] p-7 sm:p-9 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 transition-all duration-300 hover:bg-[#131a24]">
-              <div className="flex items-center gap-4 shrink-0">
-                <span className="font-mono text-[1.6rem] sm:text-[1.8rem] font-black text-gold tracking-tight">CIP-1</span>
-                <span className="font-mono text-[0.95rem] font-bold tracking-[0.1em] uppercase px-3 py-1 rounded-full border border-[#60a5fa]/40 text-[#60a5fa] bg-[#60a5fa]/10">Review</span>
-              </div>
-              <div className="flex-1">
-                <h3 className="font-serif text-[1.8rem] sm:text-[2.2rem] text-cream m-0 tracking-tight leading-tight">Coinbase KYC Attestation</h3>
-                <p className="font-mono text-[1.2rem] sm:text-[1.3rem] text-muted m-0 mt-2 leading-[1.6]">
-                  Prove KYC status without revealing your address, transaction, or identity.
-                </p>
-              </div>
-              <span className="font-mono text-[1rem] sm:text-[1.1rem] font-semibold tracking-[0.08em] uppercase text-gold/50 shrink-0">Identity</span>
-            </article>
+        <section className="max-w-[1180px] mx-auto px-6 sm:px-8 lg:px-10 py-24 sm:py-32 text-center" aria-labelledby="team-heading">
+          <div className={`${sectionLabel} mb-5`}>Team</div>
+          <h2 id="team-heading" className={`${sectionTitle} mb-14 sm:mb-16`}>The builders behind ZKProofport.</h2>
 
-            {/* CIP-2 */}
-            <article className="relative bg-[#0e1219] p-7 sm:p-9 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 transition-all duration-300 hover:bg-[#131a24]">
-              <div className="flex items-center gap-4 shrink-0">
-                <span className="font-mono text-[1.6rem] sm:text-[1.8rem] font-black text-gold tracking-tight">CIP-2</span>
-                <span className="font-mono text-[0.95rem] font-bold tracking-[0.1em] uppercase px-3 py-1 rounded-full border border-[#60a5fa]/40 text-[#60a5fa] bg-[#60a5fa]/10">Review</span>
-              </div>
-              <div className="flex-1">
-                <h3 className="font-serif text-[1.8rem] sm:text-[2.2rem] text-cream m-0 tracking-tight leading-tight">Coinbase Country Attestation</h3>
-                <p className="font-mono text-[1.2rem] sm:text-[1.3rem] text-muted m-0 mt-2 leading-[1.6]">
-                  Prove country inclusion or exclusion without revealing which country you are from.
-                </p>
-              </div>
-              <span className="font-mono text-[1rem] sm:text-[1.1rem] font-semibold tracking-[0.08em] uppercase text-gold/50 shrink-0">Identity</span>
-            </article>
-
-            {/* CIP-3 */}
-            <article className="relative bg-[#0e1219] p-7 sm:p-9 flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 transition-all duration-300 hover:bg-[#131a24]">
-              <div className="flex items-center gap-4 shrink-0">
-                <span className="font-mono text-[1.6rem] sm:text-[1.8rem] font-black text-gold tracking-tight">CIP-3</span>
-                <span className="font-mono text-[0.95rem] font-bold tracking-[0.1em] uppercase px-3 py-1 rounded-full border border-[#60a5fa]/40 text-[#60a5fa] bg-[#60a5fa]/10">Review</span>
-              </div>
-              <div className="flex-1">
-                <h3 className="font-serif text-[1.8rem] sm:text-[2.2rem] text-cream m-0 tracking-tight leading-tight">OIDC Domain Attestation</h3>
-                <p className="font-mono text-[1.2rem] sm:text-[1.3rem] text-muted m-0 mt-2 leading-[1.6]">
-                  Prove organizational membership via Google Workspace or Microsoft 365 OIDC without revealing your email or identity.
-                </p>
-              </div>
-              <span className="font-mono text-[1rem] sm:text-[1.1rem] font-semibold tracking-[0.08em] uppercase text-gold/50 shrink-0">Qualification</span>
-            </article>
-          </div>
-
-          {/* CIP Link */}
-          <a
-            className="font-mono text-[1.2rem] sm:text-[1.3rem] font-bold tracking-wider text-gold no-underline border-b-[1.5px] border-gold pb-0.5 transition-all duration-200 hover:text-gold-2 hover:border-gold-2 hover:pb-1"
-            href="https://github.com/zkproofport/CIPs" target="_blank" rel="noopener noreferrer"
-          >
-            [ View All CIPs on GitHub ]
-          </a>
-        </section>
-
-        {/* ── SEPARATOR ── */}
-        <div className="h-px max-w-[700px] mx-auto bg-gradient-to-r from-transparent via-gold-line to-transparent" />
-
-        {/* ── GRANTED BY ── */}
-        <section className="max-w-[1100px] mx-auto px-6 sm:px-8 lg:px-10 py-24 sm:py-32 text-center" aria-label="Grants and incubation">
-          <div className="font-mono text-[1.2rem] sm:text-[1.4rem] font-semibold tracking-[0.15em] uppercase text-gold mb-4">
-            Granted By
-          </div>
-          <h2 className="font-serif text-[clamp(3.2rem,5vw,5rem)] font-normal text-cream mb-14 sm:mb-16 leading-[1.1]">
-            Backed by the ecosystem.
-          </h2>
-          <div className="flex flex-col sm:flex-row items-stretch justify-center gap-6 sm:gap-8 max-w-[800px] mx-auto">
-            {/* Base Grant Card */}
-            <div className="flex-1 bg-gradient-to-b from-[#0e1219] to-[#111827] border border-gold-line rounded-2xl p-8 sm:p-10 flex flex-col items-center text-center gap-4 transition-all duration-300 hover:border-gold/30 hover:bg-[#131a24]">
-              <Image src="/base-logo.png" alt="Base" width={72} height={72} className="w-16 h-16 sm:w-[4.5rem] sm:h-[4.5rem] rounded-xl" />
-              <div className="font-serif text-[1.8rem] sm:text-[2.2rem] font-normal text-cream tracking-tight leading-tight">Base Batches 002</div>
-              <div className="font-mono text-[1.2rem] sm:text-[1.3rem] text-gold-2 tracking-wide">Builder Track</div>
-              <p className="font-mono text-[1.1rem] sm:text-[1.2rem] text-muted leading-[1.6] mt-1">
-                Selected Top 50 out of 900+ teams
-              </p>
-            </div>
-            {/* Aztec Grant Card */}
-            <div className="flex-1 bg-gradient-to-b from-[#0e1219] to-[#111827] border border-gold-line rounded-2xl p-8 sm:p-10 flex flex-col items-center text-center gap-4 transition-all duration-300 hover:border-gold/30 hover:bg-[#131a24]">
-              <Image src="/aztec.png" alt="Aztec" width={72} height={72} className="w-16 h-16 sm:w-[4.5rem] sm:h-[4.5rem] rounded-xl" />
-              <div className="font-serif text-[1.8rem] sm:text-[2.2rem] font-normal text-cream tracking-tight leading-tight">Aztec Noir Grant</div>
-              <div className="font-mono text-[1.2rem] sm:text-[1.3rem] text-gold-2 tracking-wide">ZK Circuit Development</div>
-              <p className="font-mono text-[1.1rem] sm:text-[1.2rem] text-muted leading-[1.6] mt-1">
-                Pioneer of the Noir ZK DSL ecosystem
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* ── SEPARATOR ── */}
-        <div className="h-px max-w-[700px] mx-auto bg-gradient-to-r from-transparent via-gold-line to-transparent" />
-
-        {/* ── TEAM ── */}
-        <section className="max-w-[1100px] mx-auto px-6 sm:px-8 lg:px-10 py-24 sm:py-32 text-center" aria-label="Team">
-          <div className="font-mono text-[1.2rem] sm:text-[1.4rem] font-semibold tracking-[0.15em] uppercase text-gold mb-4">
-            Team
-          </div>
-          <h2 className="font-serif text-[clamp(3.2rem,5vw,5rem)] font-normal text-cream mb-14 sm:mb-16 leading-[1.1]">
-            The builders behind the mask.
-          </h2>
-          <div className="flex flex-col sm:flex-row items-stretch justify-center gap-8 sm:gap-10 max-w-[800px] mx-auto">
-            {/* Member 1 */}
-            <div className="flex-1 bg-gradient-to-b from-[#0e1219] to-[#111827] border border-gold-line rounded-2xl p-8 sm:p-10 flex flex-col items-center text-center gap-5 transition-all duration-300 hover:border-gold/30 hover:bg-[#131a24]">
-              <Image src="/team-1.png" alt="Sooyoung Hyun" width={180} height={180} className="w-[10rem] h-[10rem] rounded-full object-cover border-[2px] border-gold/20 grayscale hover:grayscale-0 transition-all duration-500" />
-              <div>
-                <div className="font-serif text-[2rem] sm:text-[2.4rem] font-normal text-cream tracking-tight leading-tight">SY HYUN</div>
-                <div className="font-mono text-[1.1rem] sm:text-[1.2rem] text-gold-2 tracking-wide mt-2">Co-founder</div>
-              </div>
-              <ul className="list-none p-0 m-0 flex flex-col gap-2">
-                <li className="font-mono text-[1.1rem] sm:text-[1.2rem] text-muted leading-[1.5]">Ethereum Remix IDE Developer</li>
-                <li className="font-mono text-[1.1rem] sm:text-[1.2rem] text-muted leading-[1.5]">DSRV Team Lead</li>
-                <li className="font-mono text-[1.1rem] sm:text-[1.2rem] text-muted leading-[1.5]">Inha University</li>
+          <div className="grid sm:grid-cols-2 gap-px bg-gold-line max-w-[900px] mx-auto">
+            <article className="bg-[#0e1219] p-8 sm:p-10 flex flex-col items-center gap-6">
+              <Image src="/team-1.png" alt="SY Hyun" width={190} height={190} className="w-[14rem] h-[14rem] rounded-full object-cover border-2 border-gold/20 grayscale transition-all hover:grayscale-0" />
+              <div><h3 className="font-serif text-[3rem] sm:text-[3.6rem] text-cream font-normal">SY Hyun</h3><p className="font-mono text-[1.4rem] sm:text-[1.6rem] text-gold-2 mt-3">Co-founder · Product &amp; Protocol</p></div>
+              <ul className="list-none p-0 m-0 flex flex-col gap-2 text-[1.5rem] sm:text-[1.7rem] text-[#9aa4b4] leading-[1.5]">
+                <li>Ethereum Remix IDE Engineer</li><li>Former DSRV Lead Engineer</li><li>Ethereum solo home staker</li><li>Aztec Genesis Sequencer</li>
               </ul>
-            </div>
-
-            {/* Member 2 */}
-            <div className="flex-1 bg-gradient-to-b from-[#0e1219] to-[#111827] border border-gold-line rounded-2xl p-8 sm:p-10 flex flex-col items-center text-center gap-5 transition-all duration-300 hover:border-gold/30 hover:bg-[#131a24]">
-              <Image src="/team-2.png" alt="Jehyuk Hyun" width={160} height={160} className="w-[10rem] h-[10rem] rounded-full object-cover border-[2px] border-gold/20 grayscale hover:grayscale-0 transition-all duration-500" />
-              <div>
-                <div className="font-serif text-[2rem] sm:text-[2.4rem] font-normal text-cream tracking-tight leading-tight">JH HYUN</div>
-                <div className="font-mono text-[1.1rem] sm:text-[1.2rem] text-gold-2 tracking-wide mt-2">Co-founder</div>
-              </div>
-              <ul className="list-none p-0 m-0 flex flex-col gap-2">
-                <li className="font-mono text-[1.1rem] sm:text-[1.2rem] text-muted leading-[1.5]">NHN Cloud Team Lead</li>
-                <li className="font-mono text-[1.1rem] sm:text-[1.2rem] text-muted leading-[1.5]">Tmax Soft</li>
-                <li className="font-mono text-[1.1rem] sm:text-[1.2rem] text-muted leading-[1.5]">KAIST</li>
+            </article>
+            <article className="bg-[#0e1219] p-8 sm:p-10 flex flex-col items-center gap-6">
+              <Image src="/team-2.png" alt="JH Hyun" width={190} height={190} className="w-[14rem] h-[14rem] rounded-full object-cover border-2 border-gold/20 grayscale transition-all hover:grayscale-0" />
+              <div><h3 className="font-serif text-[3rem] sm:text-[3.6rem] text-cream font-normal">JH Hyun</h3><p className="font-mono text-[1.4rem] sm:text-[1.6rem] text-gold-2 mt-3">Co-founder · Engineering &amp; Infrastructure</p></div>
+              <ul className="list-none p-0 m-0 flex flex-col gap-2 text-[1.5rem] sm:text-[1.7rem] text-[#9aa4b4] leading-[1.5]">
+                <li>KAIST graduate</li><li>NHN Cloud distributed systems</li><li>Former TmaxSoft Engineer</li>
               </ul>
-            </div>
+            </article>
           </div>
         </section>
 
-        {/* ── SEPARATOR ── */}
-        <div className="h-px max-w-[700px] mx-auto bg-gradient-to-r from-transparent via-gold-line to-transparent" />
+        <Separator />
 
-        {/* ── FOOTER ── */}
-        <footer
-          className="py-10 sm:py-12 px-6 flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-5 text-center font-mono text-[1.15rem] sm:text-[1.3rem] text-muted"
-          role="contentinfo"
-        >
+        <footer className="py-12 sm:py-14 px-6 flex flex-col sm:flex-row flex-wrap items-center justify-center gap-4 sm:gap-7 text-center font-mono text-[1.4rem] sm:text-[1.6rem] text-[#9aa4b4]" role="contentinfo">
           <span>© {new Date().getFullYear()} ZKProofport</span>
-          <span className="hidden sm:inline text-gold/20" aria-hidden="true">·</span>
-          <span>X: <a href="https://x.com/zkproofport" rel="noopener noreferrer" className="text-gold-2 no-underline border-b border-gold-2/30 hover:border-gold-2 transition-colors">@zkproofport</a></span>
+          <span className="hidden sm:inline text-gold/30" aria-hidden="true">·</span>
+          <ExternalLink href="https://github.com/zkproofport">GitHub</ExternalLink>
+          <ExternalLink href="https://github.com/zkproofport/CIPs">CIPs</ExternalLink>
+          <ExternalLink href="https://x.com/zkproofport">@zkproofport</ExternalLink>
         </footer>
-      </div>
+      </main>
     </>
   );
 }

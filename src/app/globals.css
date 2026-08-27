@@ -61,20 +61,20 @@ body{
    ========================================================= */
 header[aria-label="site header"] {
   position: fixed; top: 0; left: 0; right: 0; z-index: 20;
-  height: 5rem;
+  height: 6.4rem;
   backdrop-filter: blur(10px);
   background: linear-gradient(180deg, rgba(10,14,20,.85), rgba(10,14,20,.45));
   border-bottom: 1px solid var(--color-gold-line);
 }
 header[aria-label="site header"] .inner{
   max-width: 1280px; width: calc(100% - 2rem);
-  margin: 0 auto; padding: 1rem 0;
+  margin: 0 auto; padding: 1.4rem 0;
   display: flex; align-items: center; justify-content: center; gap: 0.75rem;
 }
 header[aria-label="site header"] .title{
   font-family: var(--font-mono);
   font-weight: 700; letter-spacing: 0.04em;
-  font-size: clamp(1.3rem, 2.5vw, 1.7rem);
+  font-size: clamp(1.6rem, 2.5vw, 2rem);
   text-transform: uppercase; color: var(--color-cream);
 }
 
@@ -95,6 +95,322 @@ header[aria-label="site header"] .title{
   position: absolute; inset: -1px;
   background: linear-gradient(135deg, rgba(214,177,92,0.1), transparent 40%, transparent 60%, rgba(214,177,92,0.05));
   pointer-events: none;
+}
+
+/* =========================================================
+   INTERACTIVE ARCHITECTURE MAP
+   ========================================================= */
+.architecture-map{
+  margin-top: 5.6rem;
+  border: 1px solid var(--color-gold-line);
+  background: rgba(14,18,25,.92);
+  overflow: hidden;
+}
+
+.architecture-toolbar{
+  min-height: 7.2rem;
+  padding: 1.5rem 1.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.6rem;
+  border-bottom: 1px solid var(--color-gold-line);
+}
+.architecture-toolbar p{
+  margin: 0;
+  color: #9aa4b4;
+  font-size: 1.5rem;
+  line-height: 1.5;
+}
+.architecture-route-switch{
+  display: flex;
+  flex-wrap: wrap;
+  gap: .6rem;
+}
+.architecture-route-switch button{
+  appearance: none;
+  min-height: 4.2rem;
+  padding: .8rem 1.4rem;
+  border: 1px solid rgba(214,177,92,.22);
+  background: transparent;
+  color: #9aa4b4;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  transition: border-color .2s ease, background .2s ease, color .2s ease;
+}
+.architecture-route-switch button:hover,
+.architecture-route-switch button:focus-visible{
+  border-color: var(--color-gold);
+  color: var(--color-cream);
+  outline: none;
+}
+.architecture-route-switch button[aria-pressed="true"]{
+  border-color: var(--color-gold);
+  background: rgba(214,177,92,.12);
+  color: var(--color-gold-2);
+}
+
+.architecture-canvas{
+  position: relative;
+  background:
+    linear-gradient(rgba(214,177,92,.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(214,177,92,.035) 1px, transparent 1px),
+    #0b1017;
+  background-size: 3.2rem 3.2rem;
+}
+.architecture-svg{
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.architecture-phase-labels text{
+  fill: #7e8999;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+.architecture-phase-labels path{
+  fill: none;
+  stroke: rgba(214,177,92,.28);
+  stroke-width: 1;
+  stroke-dasharray: 4 5;
+}
+.architecture-lane{
+  transition: opacity .25s ease;
+}
+.architecture-lane--human{ color: var(--color-gold-2) }
+.architecture-lane--agent{ color: #b99ce5 }
+.architecture-lane.is-muted,
+.architecture-node.is-muted{
+  opacity: .15;
+}
+.architecture-lane-title{
+  fill: currentColor;
+  font-family: var(--font-mono);
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: .04em;
+}
+.architecture-lane-meta{
+  fill: #7e8999;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 600;
+}
+.architecture-route-line{
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: .65;
+  transition: stroke-dashoffset 1.35s cubic-bezier(.2,.7,.2,1), opacity .25s ease;
+}
+.architecture-map.is-visible .architecture-route-line{
+  stroke-dashoffset: 0;
+}
+.architecture-step{
+  cursor: pointer;
+  outline: none;
+}
+.architecture-step-card{
+  fill: rgba(14,18,25,.72);
+  stroke: rgba(214,177,92,.14);
+  stroke-width: 1;
+  transition: fill .2s ease, stroke .2s ease, transform .2s ease;
+}
+.architecture-step:hover .architecture-step-card,
+.architecture-step:focus-visible .architecture-step-card,
+.architecture-step.is-active .architecture-step-card{
+  fill: #141b25;
+  stroke: rgba(214,177,92,.7);
+  transform: translateY(-3px);
+}
+.architecture-step-number{
+  fill: var(--color-gold);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 800;
+}
+.architecture-step-title{
+  fill: var(--color-cream);
+  font-size: 16px;
+  font-weight: 700;
+}
+.architecture-step-hint{
+  fill: #657083;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .06em;
+}
+.architecture-step.is-active .architecture-step-hint{
+  fill: var(--color-gold-2);
+}
+.architecture-node{
+  transition: opacity .25s ease;
+}
+.architecture-node--human{ color: var(--color-gold-2) }
+.architecture-node--agent{ color: #b99ce5 }
+.architecture-node-ring{
+  fill: #0b1017;
+  stroke: currentColor;
+  stroke-width: 2;
+  transition: r .2s ease, fill .2s ease;
+}
+.architecture-node-core{
+  fill: currentColor;
+}
+.architecture-step:hover .architecture-node-ring,
+.architecture-step:focus-visible .architecture-node-ring,
+.architecture-step.is-active .architecture-node-ring{
+  r: 19px;
+  fill: rgba(214,177,92,.07);
+}
+.architecture-step.is-active .architecture-node-core{
+  filter: url(#architecture-glow);
+}
+
+.architecture-mobile-steps{
+  display: none;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.architecture-detail{
+  display: grid;
+  grid-template-columns: 1.05fr 1fr 1fr;
+  border-top: 1px solid var(--color-gold-line);
+}
+.architecture-detail > div{
+  min-height: 19rem;
+  padding: 2.8rem;
+  border-right: 1px solid var(--color-gold-line);
+}
+.architecture-detail > div:last-child{ border-right: 0 }
+.architecture-detail span{
+  display: block;
+  margin-bottom: 1.3rem;
+  color: var(--color-gold);
+  font-family: var(--font-mono);
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.architecture-detail h3{
+  margin: 0 0 1.1rem;
+  color: var(--color-cream);
+  font-family: var(--font-serif);
+  font-size: clamp(2.8rem, 3vw, 3.6rem);
+  font-weight: 400;
+  line-height: 1.1;
+}
+.architecture-detail p{
+  margin: 0;
+  color: #9aa4b4;
+  font-size: 1.6rem;
+  line-height: 1.65;
+}
+.architecture-detail-route{
+  transition: opacity .25s ease, background .25s ease;
+}
+.architecture-detail-route--human{
+  background: rgba(240,212,136,.035);
+}
+.architecture-detail-route--human span{ color: var(--color-gold-2) }
+.architecture-detail-route--agent{
+  background: rgba(185,156,229,.045);
+}
+.architecture-detail-route--agent span{ color: #c8aeed }
+.architecture-detail-route.is-muted{ opacity: .24 }
+.architecture-outcome{
+  padding: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.2rem;
+  border-top: 1px solid var(--color-gold-line);
+  color: #9aa4b4;
+  font-family: var(--font-mono);
+  font-size: 1.5rem;
+  letter-spacing: .02em;
+}
+.architecture-outcome i{
+  color: var(--color-gold);
+  font-style: normal;
+}
+.architecture-outcome strong{
+  color: var(--color-gold-2);
+  font-weight: 800;
+}
+
+@media (max-width: 767px){
+  .architecture-toolbar{
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 1.8rem;
+  }
+  .architecture-toolbar p{ font-size: 1.6rem }
+  .architecture-route-switch{ width: 100% }
+  .architecture-route-switch button{
+    flex: 1 1 0;
+    padding-inline: .8rem;
+    font-size: 1.3rem;
+  }
+  .architecture-svg{ display: none }
+  .architecture-mobile-steps{ display: block }
+  .architecture-mobile-steps li{ border-bottom: 1px solid var(--color-gold-line) }
+  .architecture-mobile-steps button{
+    width: 100%;
+    min-height: 7.2rem;
+    padding: 1.4rem 1.8rem;
+    display: grid;
+    grid-template-columns: 4rem 1fr;
+    align-items: center;
+    border: 0;
+    background: transparent;
+    color: #9aa4b4;
+    text-align: left;
+  }
+  .architecture-mobile-steps button span{
+    color: var(--color-gold);
+    font-family: var(--font-mono);
+    font-size: 1.3rem;
+  }
+  .architecture-mobile-steps button strong{
+    color: inherit;
+    font-size: 1.7rem;
+  }
+  .architecture-mobile-steps button[aria-pressed="true"]{
+    background: rgba(214,177,92,.1);
+    color: var(--color-cream);
+  }
+  .architecture-detail{ grid-template-columns: 1fr }
+  .architecture-detail > div{
+    min-height: 0;
+    padding: 2.4rem 1.8rem;
+    border-right: 0;
+    border-bottom: 1px solid var(--color-gold-line);
+  }
+  .architecture-detail p{ font-size: 1.7rem }
+  .architecture-outcome{
+    align-items: flex-start;
+    flex-direction: column;
+    font-size: 1.6rem;
+  }
+  .architecture-outcome i{ transform: rotate(90deg) }
+}
+
+@media (prefers-reduced-motion: reduce){
+  .architecture-route-line{ transition: none; stroke-dashoffset: 0 }
+  .architecture-step-card,
+  .architecture-node-ring{ transition: none }
 }
 
 /* Footer — used by portal page */

@@ -4,7 +4,6 @@ import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { JetBrains_Mono, DM_Serif_Display } from "next/font/google";
 import "./globals.css";
-import { Providers } from "./providers";
 
 const jetbrains = JetBrains_Mono({
   subsets: ["latin"],
@@ -29,23 +28,23 @@ export const viewport: Viewport = {
 
 /* ── SEO + AI Agent Discoverability ── */
 export const metadata: Metadata = {
-  title: "ZKProofport",
+  title: "ZKProofport | Composable Privacy Infrastructure",
   icons: {
     icon: "/favicon.ico",
   },
   description:
-    "To prove trust, you must sacrifice privacy. ZKProofport breaks this paradox with zero-knowledge proofs. A general-purpose ZK proof portal & SDK — apps, DApps, and AI agents generate privacy-preserving proofs client-side, 0 bytes exposed.",
+    "Privacy-preserving proofs that let applications and AI agents verify user conditions without collecting the underlying private data.",
   keywords: [
     "zero knowledge proof",
     "ZK proof",
     "privacy infrastructure",
     "KYC",
     "ZK SDK",
-    "proof portal",
+    "selective disclosure",
     "onchain verification",
     "Noir circuit",
-    "decentralized identity",
-    "Web3 privacy",
+    "credential privacy",
+    "Ethereum privacy",
     "ERC-8004",
     "agent-to-agent",
     "TEE",
@@ -65,18 +64,18 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     siteName: "ZKProofport",
-    title: "ZKProofport — Privacy-First Trust Infrastructure for Web3",
+    title: "ZKProofport | Composable Privacy Infrastructure",
     description:
-      "Privacy-preserving ZK proof portal & SDK. KYC, age gating, credit score, RWA — client-side only, 0 bytes exposed. Backed by Base & Aztec.",
+      "Privacy-preserving proofs for applications and AI agents, built on open specifications, Noir circuits, and EVM verifiers.",
     url: "https://zkproofport.com",
   },
   twitter: {
     card: "summary_large_image",
     site: "@zkproofport",
     creator: "@zkproofport",
-    title: "ZKProofport — Privacy-First Trust Infrastructure for Web3",
+    title: "ZKProofport | Composable Privacy Infrastructure",
     description:
-      "Privacy-preserving ZK proof portal & SDK. KYC, age gating, credit score, RWA — client-side only, 0 bytes exposed. Backed by Base & Aztec.",
+      "Privacy-preserving proofs for applications and AI agents, built on open specifications, Noir circuits, and EVM verifiers.",
   },
   alternates: {
     canonical: "https://zkproofport.com",
@@ -86,28 +85,22 @@ export const metadata: Metadata = {
 /* ── JSON-LD Structured Data — AI agent / LLM crawler friendly ── */
 const jsonLd = {
   "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
+  "@type": "SoftwareSourceCode",
   name: "ZKProofport",
-  applicationCategory: "DeveloperApplication",
-  operatingSystem: "Web, iOS",
+  codeRepository: "https://github.com/zkproofport",
+  programmingLanguage: ["Noir", "TypeScript", "Solidity", "Rust"],
   description:
-    "Privacy-first trust infrastructure for Web3. ZK proof portal & SDK — apps, DApps, and AI agents generate privacy-preserving proofs client-side, 0 bytes exposed.",
+    "Composable privacy infrastructure for credentials, applications, and AI agents.",
   url: "https://zkproofport.com",
-  offers: {
-    "@type": "Offer",
-    price: "0",
-    priceCurrency: "USD",
-    availability: "https://schema.org/ComingSoon",
-  },
   featureList: [
-    "Web Portal — browser-based proof generation & on-chain verification",
-    "Mobile App — native iOS with biometric auth & client-side proving",
-    "Prover Agent — agent-to-agent proof delegation via ERC-8004, X402, TEE",
-    "Circuit categories: KYC, Country, Credit Score, Age Gating, RWA, AI Economy",
-    "Client-side only proving — 0 bytes exposed to any server",
-    "Backed by Base Batches 002 & Aztec Noir Grant",
+    "Coinbase KYC credential proof",
+    "Coinbase country predicate",
+    "Google Workspace and Microsoft 365 OIDC domain proof",
+    "Noir reference circuits and EVM verifier contracts",
+    "On-device mobile proving built with mopro",
+    "Encrypted agent proving through AWS Nitro Enclave",
   ],
-  sameAs: ["https://x.com/zkproofport", "https://www.npmjs.com/package/@zkproofport/sdk"],
+  sameAs: ["https://github.com/zkproofport", "https://x.com/zkproofport", "https://www.npmjs.com/package/@zkproofport-app/sdk"],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -132,7 +125,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         `}
       </Script>
       <body>
-        <Providers>{children}</Providers>
+        {children}
       </body>
     </html>
   );
