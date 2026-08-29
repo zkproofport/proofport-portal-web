@@ -163,46 +163,6 @@ export default function Landing() {
 
         <Separator />
 
-        <section id="proofs" className="max-w-[1180px] mx-auto px-6 sm:px-8 lg:px-10 py-24 sm:py-32" aria-labelledby="proofs-heading">
-          <div className={`${sectionLabel} mb-5`}>Current Proof Catalog</div>
-          <h2 id="proofs-heading" className={`${sectionTitle} mb-7`}>Implemented proof profiles.</h2>
-          <p className={`${bodyCopy} max-w-[76ch] mb-14`}>
-            Current reference implementations are clearly separated from draft, experimental, and next-stage predicates.
-          </p>
-
-          <div className="flex flex-col gap-px bg-gold-line">
-            {currentProofs.map((proof) => (
-              <article key={proof.cip} className="group bg-[#0e1219] p-8 sm:p-10 grid md:grid-cols-[12rem_1fr_auto] gap-5 md:gap-8 items-center transition-colors hover:bg-[#131a24]">
-                <span className="font-mono text-[1.5rem] font-black text-gold tracking-wide">{proof.cip}</span>
-                <div>
-                  <h3 className="font-serif text-[2.8rem] sm:text-[3.4rem] text-cream font-normal mb-3">{proof.title}</h3>
-                  <p className={`${bodyCopy} max-w-[66ch]`}>{proof.copy}</p>
-                </div>
-                <span className="justify-self-start font-mono text-[1.3rem] sm:text-[1.4rem] font-bold tracking-[0.08em] uppercase px-4 py-2 border border-[#6fb98f]/40 text-[#8bd3a8] bg-[#6fb98f]/10">Review / Reference</span>
-              </article>
-            ))}
-          </div>
-
-          <div className="grid lg:grid-cols-2 gap-px bg-gold-line mt-8">
-            <article className="bg-[#11151d] p-8 sm:p-10">
-              <div className="font-mono text-[1.3rem] font-bold tracking-[0.1em] uppercase text-[#9aa4b4] mb-5">Draft / Experimental</div>
-              <p className="text-[1.7rem] sm:text-[1.9rem] text-cream leading-[1.7]">CIP-4 GIWA Dojang <span className="text-[#9aa4b4]">— Draft / PoC</span></p>
-              <p className="text-[1.7rem] sm:text-[1.9rem] text-cream leading-[1.7]">CIP-5 Korean Mobile ID <span className="text-[#9aa4b4]">— Draft / Experimental</span></p>
-            </article>
-            <article className="bg-[#11151d] p-8 sm:p-10 border-l-2 border-gold">
-              <div className="font-mono text-[1.3rem] font-bold tracking-[0.1em] uppercase text-gold mb-5">Next · Not shipped</div>
-              <h3 className="font-serif text-[2.8rem] sm:text-[3.4rem] text-cream font-normal mb-4">Balance / Asset Threshold</h3>
-              <p className={bodyCopy}>Prove that a wallet or account satisfies an asset threshold without exposing the exact balance or source wallet.</p>
-            </article>
-          </div>
-
-          <div className="mt-10">
-            <ExternalLink href="https://github.com/zkproofport/CIPs">[ View All CIPs on GitHub ]</ExternalLink>
-          </div>
-        </section>
-
-        <Separator />
-
         <section className="max-w-[1180px] mx-auto px-6 sm:px-8 lg:px-10 py-24 sm:py-32" aria-labelledby="architecture-heading">
           <div className="text-center">
             <div className={`${sectionLabel} mb-5`}>Architecture</div>
