@@ -105,3 +105,12 @@ The subsequent revision replaces the isolated stems with continuous connections 
 The hero uses the same processing-node and connector language. Core-flow stages use identical 32px / 112px / 32px rows with 16px gaps, placing each connector on the middle row's center. Policy composition uses an explicit AND gate rather than addition; both conditions and their merge remain visible on mobile. Lines use a 1.5px stroke and directional heads use 5px arms. Buttons and resource links retain their simpler text treatment.
 
 Build, changed-file lint, explicit-standard-types TypeScript, style-reference and rendered-HTML checks passed. Algebraic checks confirmed equal branch runs for diagram widths of 272, 342, 584 and 1120px. This final geometry revision has not been visually verified: native browser control was repeatedly interrupted, and the separate browser connection timed out. Earlier screenshot checks above refer to the preceding revisions.
+
+### Composition revision: shared alignment and information hierarchy
+
+- Header, sections and footer now share a 1344px maximum measure and common responsive gutters. Mobile gutters are consistently 24px.
+- Hero, demo and core closing statement share 7:5 column proportions. The three-way hero baseline and duplicate resource links were removed; company attribution now sits beneath the hero actions.
+- Developer infrastructure is a 5:7 composition: introduction and resources on the left, a semantic role/implementation definition list on the right. Circuits, proving, verification, integration and trust sources share a consistent label column.
+- Program selections use the same outer columns and an equal three-column row, rather than floating below an unrelated horizontal list. Mobile presents each program next to its status.
+- Closing CTA and footer use explicit grid positions. Section space, gutters and column gaps are shared CSS variables; the lower-specificity margin reset lets component spacing work predictably.
+- Scoped style-reference, TypeScript and lint checks passed. Production build passed with the existing optional portal dependency warnings. Visual review at 1440, 1920 and 390px is pending: native Chrome reported that the user was still interacting with it. Separate headless verification has been requested and is not yet authorized. No visual-quality completion claim is made for this revision.

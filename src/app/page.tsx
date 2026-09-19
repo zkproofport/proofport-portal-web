@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import Header from "./components/Header";
 import { BrandMark, HeroProof, PolicyComposition, ProductFlow, ProvingEnvironments } from "./components/ProductVisuals";
 import styles from "./product.module.css";
@@ -17,18 +18,12 @@ export default function Landing() {
       <main id="main">
         <section id="product" className={`${styles.hero} ${styles.container}`} aria-labelledby="hero-heading">
           <div className={styles.heroCopy}>
-
             <h1 id="hero-heading">Private eligibility<br />for humans<br />and <span>AI agents.</span></h1>
             <p className={styles.heroDescription}>Prove what is required without directly sharing the underlying credential.</p>
             <div className={styles.actions}><DemoLink /><Link className={styles.secondaryButton} href="/developers">Build with ZKProofport</Link></div>
-            <div className={styles.heroResources}><Link href="/developers">Docs</Link><a href="https://github.com/zkproofport" target="_blank" rel="noopener noreferrer">GitHub</a></div>
+            <p className={styles.heroAttribution}>A product by <a href="https://masselabs.com" target="_blank" rel="noopener noreferrer">Masse Labs</a></p>
           </div>
           <HeroProof />
-          <div className={styles.heroBaseline}>
-            <span>People <b>On-device proving</b></span>
-            <span>Agents <b>TEE-capable workflows</b></span>
-            <a href="https://masselabs.com" target="_blank" rel="noopener noreferrer">Built by Masse Labs</a>
-          </div>
         </section>
 
         <section id="how-it-works" className={`${styles.section} ${styles.coreSection}`} aria-labelledby="flow-heading">
@@ -41,7 +36,7 @@ export default function Landing() {
 
         <section id="demo" className={`${styles.section} ${styles.demoSection}`} aria-labelledby="demo-heading">
           <div className={`${styles.container} ${styles.demoLayout}`}>
-            <div className={styles.sectionHeading}><p className={styles.sectionLabel}>Interactive demo</p><h2 id="demo-heading">See private eligibility<br /><span>in action.</span></h2><p>Try the end-to-end ZKProofport flow.</p><div className={styles.actions}><DemoLink /></div><p className={styles.smallNote}>demo.zkproofport.app</p></div>
+            <div className={styles.sectionHeading}><p className={styles.sectionLabel}>Interactive demo</p><h2 id="demo-heading">See private eligibility<br /><span>in action.</span></h2><p>Try the end-to-end ZKProofport flow.</p><div className={styles.actions}><DemoLink /></div></div>
             <figure className={styles.demoJourney}>
               <figcaption className={styles.sectionLabel}>Request. Prove. Verify.</figcaption>
               <ol>
@@ -71,10 +66,32 @@ export default function Landing() {
 
         <section id="build" className={styles.section} aria-labelledby="build-heading">
           <div className={styles.container}>
-            <div className={styles.buildHeading}><h2 id="build-heading">Built.<br /><span>Open to inspect.</span></h2><div><p>From circuits to application integration.</p><div className={styles.resourceLinks}><Link href="/developers">Docs</Link><a href="https://github.com/zkproofport" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://github.com/zkproofport/CIPs" target="_blank" rel="noopener noreferrer">CIPs</a></div></div></div>
-            <ul className={styles.infrastructureStrip} aria-label="Implemented infrastructure"><li>Noir</li><li>Mobile prover</li><li>EVM verifier</li><li>TypeScript SDK</li><li>TEE prover</li></ul>
-            <div className={styles.sourceStrip}><span>Trust sources</span><p>Coinbase KYC / EAS <i>·</i> OIDC <i>·</i> GIWA Sepolia prototype</p></div>
-            <ul className={styles.credibility} aria-label="Program selections and ecosystem support"><li>Base Batches 002<span>Builder Track Top 50</span></li><li>Aztec / Noir<span>Ecosystem support</span></li><li>GIWA GASOK<span>Phase 3 selection</span></li></ul>
+            <div className={styles.buildLayout}>
+              <div className={styles.buildIntro}>
+                <h2 id="build-heading">Built.<br /><span>Open to inspect.</span></h2>
+                <p>From circuits to application integration.</p>
+                <nav className={styles.resourceLinks} aria-label="Developer resources">
+                  <Link href="/developers">Docs</Link>
+                  <a href="https://github.com/zkproofport" target="_blank" rel="noopener noreferrer">GitHub</a>
+                  <a href="https://github.com/zkproofport/CIPs" target="_blank" rel="noopener noreferrer">CIPs</a>
+                </nav>
+              </div>
+              <dl className={styles.implementationLedger}>
+                <div><dt>Circuits</dt><dd>Noir</dd></div>
+                <div><dt>Proving</dt><dd>Mobile prover <span className={styles.ledgerSeparator}>/</span> TEE prover</dd></div>
+                <div><dt>Verification</dt><dd>EVM verifier</dd></div>
+                <div><dt>Integration</dt><dd>TypeScript SDK</dd></div>
+                <div className={styles.sourcesRow}><dt>Trust sources</dt><dd><ul><li>Coinbase KYC / EAS</li><li>OIDC</li><li>UPbit KYC <span>prototype</span></li></ul></dd></div>
+              </dl>
+            </div>
+            <div className={styles.recognition}>
+              <p>Programs &amp; ecosystem</p>
+              <ul aria-label="Program selections and ecosystem Grant">
+                <li><div className={styles.recognitionLogo}><Image src="/recognition/base.svg" alt="" width={128} height={32} /></div><div className={styles.recognitionCopy}><span>Base Batches 002</span><p>Builder Track Top 50</p></div></li>
+                <li><div className={styles.recognitionLogo}><Image src="/recognition/aztec.svg" alt="" width={125} height={32} /></div><div className={styles.recognitionCopy}><span>Aztec / Noir</span><p>Ecosystem Grant</p></div></li>
+                <li><div className={styles.recognitionLogo}><Image src="/recognition/giwa.webp" alt="" width={110} height={32} /></div><div className={styles.recognitionCopy}><span>GIWA GASOK</span><p>Phase 3 selection</p></div></li>
+              </ul>
+            </div>
           </div>
         </section>
       </main>
