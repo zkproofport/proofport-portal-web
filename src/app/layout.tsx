@@ -2,7 +2,7 @@ import "buffer";
 
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
-import { JetBrains_Mono, DM_Serif_Display } from "next/font/google";
+import { JetBrains_Mono, DM_Serif_Display, Inter } from "next/font/google";
 import "./globals.css";
 
 const jetbrains = JetBrains_Mono({
@@ -18,22 +18,28 @@ const dmSerif = DM_Serif_Display({
   display: "swap",
 });
 
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-product-next",
+  display: "swap",
+});
+
 /* ── Viewport (responsive) ── */
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
-  themeColor: "#0a0e14",
+  themeColor: "#071827",
 };
 
 /* ── SEO + AI Agent Discoverability ── */
 export const metadata: Metadata = {
-  title: "ZKProofport | Composable Privacy Infrastructure",
+  title: "ZKProofport | Private Eligibility for Humans and AI Agents",
   icons: {
     icon: "/favicon.ico",
   },
   description:
-    "Turn trusted credentials into composable zero-knowledge proofs for Ethereum applications and AI agents.",
+    "Private eligibility infrastructure for humans and AI agents. Applications verify required conditions without directly receiving the underlying credential. Built by Masse Labs.",
   keywords: [
     "zero knowledge proof",
     "ZK proof",
@@ -64,18 +70,18 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     siteName: "ZKProofport",
-    title: "ZKProofport | Composable Privacy Infrastructure",
+    title: "ZKProofport | Private Eligibility for Humans and AI Agents",
     description:
-      "Turn trusted credentials into composable zero-knowledge proofs for Ethereum applications and AI agents.",
+      "Private eligibility infrastructure for humans and AI agents. Applications verify required conditions without directly receiving the underlying credential. Built by Masse Labs.",
     url: "https://zkproofport.com",
   },
   twitter: {
     card: "summary_large_image",
     site: "@zkproofport",
     creator: "@zkproofport",
-    title: "ZKProofport | Composable Privacy Infrastructure",
+    title: "ZKProofport | Private Eligibility for Humans and AI Agents",
     description:
-      "Turn trusted credentials into composable zero-knowledge proofs for Ethereum applications and AI agents.",
+      "Private eligibility infrastructure for humans and AI agents. Applications verify required conditions without directly receiving the underlying credential. Built by Masse Labs.",
   },
   alternates: {
     canonical: "https://zkproofport.com",
@@ -87,10 +93,11 @@ const jsonLd = {
   "@context": "https://schema.org",
   "@type": "SoftwareSourceCode",
   name: "ZKProofport",
+  producer: { "@type": "Organization", name: "Masse Labs", url: "https://masselabs.com" },
   codeRepository: "https://github.com/zkproofport",
   programmingLanguage: ["Noir", "TypeScript", "Solidity", "Rust"],
   description:
-    "Composable privacy infrastructure for credentials, applications, and AI agents.",
+    "Private eligibility infrastructure for humans and AI agents, built by Masse Labs.",
   url: "https://zkproofport.com",
   featureList: [
     "Coinbase KYC credential proof",
@@ -98,14 +105,14 @@ const jsonLd = {
     "Google Workspace and Microsoft 365 OIDC domain proof",
     "Noir reference circuits and EVM verifier contracts",
     "On-device mobile proving built with mopro",
-    "Encrypted agent proving through AWS Nitro Enclave",
+    "Agent proving with TEE support on configured, attested deployments",
   ],
   sameAs: ["https://github.com/zkproofport", "https://x.com/zkproofport", "https://www.npmjs.com/package/@zkproofport-app/sdk"],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${jetbrains.variable} ${dmSerif.variable}`}>
+    <html lang="en" className={`${jetbrains.variable} ${dmSerif.variable} ${inter.variable}`}>
       <head>
         <script
           type="application/ld+json"

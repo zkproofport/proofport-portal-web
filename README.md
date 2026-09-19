@@ -1,5 +1,13 @@
 # ZKProofport Portal
 
+## Website routes
+
+- `/`: product homepage for ZKProofport private eligibility infrastructure.
+- `/developers`: integration entry points, trust models, circuit specifications, and deployment references.
+- `/portal`: the SDK-invoked browser proof runner described below.
+
+Homepage content decisions and implementation-status evidence are documented in [the website content review](docs/website-content-review.md).
+
 This is the **Proof Portal** web application for the ZKProofport protocol. It provides a **generalized** user interface where users can securely generate ZK proofs for various circuits within their browser.
 
 ## Overview
