@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import Header from "../components/Header";
 import styles from "../product.module.css";
+import { socialImage } from "../social-image";
 
 export const metadata: Metadata = {
   title: "Build with ZKProofport | Developer Guide",
   description: "Integration entry points, proving environments, trust assumptions, circuits and open specifications for ZKProofport.",
   alternates: { canonical: "https://zkproofport.com/developers" },
-  openGraph: { title: "Build with ZKProofport", description: "Developer integration guide and trust models for private eligibility.", url: "https://zkproofport.com/developers" },
-  twitter: { title: "Build with ZKProofport", description: "Developer integration guide and trust models for private eligibility." },
+  openGraph: { title: "Build with ZKProofport", description: "Developer integration guide and trust models for private eligibility.", url: "https://zkproofport.com/developers", images: [socialImage] },
+  twitter: { card: "summary_large_image", title: "Build with ZKProofport", description: "Developer integration guide and trust models for private eligibility.", images: [socialImage] },
 };
 
 function Resource({ href, children }: { href: string; children: React.ReactNode }) {

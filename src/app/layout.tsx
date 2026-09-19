@@ -4,6 +4,7 @@ import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import { JetBrains_Mono, DM_Serif_Display, Inter } from "next/font/google";
 import "./globals.css";
+import { socialImage } from "./social-image";
 
 const jetbrains = JetBrains_Mono({
   subsets: ["latin"],
@@ -74,11 +75,13 @@ export const metadata: Metadata = {
     description:
       "Private eligibility infrastructure for humans and AI agents. Applications verify required conditions without directly receiving the underlying credential. Built by Masse Labs.",
     url: "https://zkproofport.com",
+    images: [socialImage],
   },
   twitter: {
     card: "summary_large_image",
     site: "@zkproofport",
     creator: "@zkproofport",
+    images: [socialImage],
     title: "ZKProofport | Private Eligibility for Humans and AI Agents",
     description:
       "Private eligibility infrastructure for humans and AI agents. Applications verify required conditions without directly receiving the underlying credential. Built by Masse Labs.",
