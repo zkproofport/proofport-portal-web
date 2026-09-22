@@ -54,6 +54,11 @@
 .site .secondaryButton, .site .resourceLinks a { text-decoration: underline; text-decoration-color: var(--gold-line); text-underline-offset: 6px; text-decoration-thickness: 1px; }
 .secondaryButton:hover { color: var(--gold-light); }
 .heroAttribution { margin-top: 32px; font-size: 1.8rem; color: var(--muted); }
+.appDownloads { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--line); }
+.appDownloads > p { font-size: 1.7rem; color: var(--muted); }
+.storeLinks { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 14px; }
+.storeLinks a { display: inline-flex; align-items: center; gap: 12px; min-height: 48px; padding: 10px 16px; border: 1px solid var(--gold-line); font-size: 1.7rem; }
+.storeLinks a:hover { background: var(--layer); color: var(--gold-light); }
 .heroAttribution a { color: var(--paper); text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 5px; }
 .heroProof { align-self: center; justify-self: center; width: 100%; max-width: 520px; display: flex; flex-direction: column; align-items: center; text-align: center; }
 .privateSample { width: 64%; padding-bottom: 24px; border-bottom: 1.5px solid var(--line); }

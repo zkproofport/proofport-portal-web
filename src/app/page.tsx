@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import Header from "./components/Header";
+import AppDownloads from "./components/AppDownloads";
 import { BrandMark, HeroProof, PolicyComposition, ProductFlow, ProvingEnvironments } from "./components/ProductVisuals";
 import styles from "./product.module.css";
 
@@ -21,6 +22,7 @@ export default function Landing() {
             <h1 id="hero-heading">Private eligibility<br />for humans<br />and <span>AI agents.</span></h1>
             <p className={styles.heroDescription}>Prove what is required without directly sharing the underlying credential.</p>
             <div className={styles.actions}><DemoLink /><Link className={styles.secondaryButton} href="/developers">Build with ZKProofport</Link></div>
+            <AppDownloads />
             <p className={styles.heroAttribution}>A product by <a href="https://masselabs.com" target="_blank" rel="noopener noreferrer">Masse Labs</a></p>
           </div>
           <HeroProof />
