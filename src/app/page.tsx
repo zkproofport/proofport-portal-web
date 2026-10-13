@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Header from "./components/Header";
 import AppDownloads from "./components/AppDownloads";
+import BrandWordmark from "./components/BrandWordmark";
 import { BrandMark, HeroProof, PolicyComposition, ProductFlow, ProvingEnvironments } from "./components/ProductVisuals";
 import styles from "./product.module.css";
 
@@ -100,7 +101,7 @@ export default function Landing() {
       <footer className={styles.footer}>
         <div className={styles.container}>
           <div className={styles.closing}><div><h2>Build private eligibility<br />into your application.</h2><p>For wallets, financial applications, and autonomous agents.</p></div><Link className={styles.primaryButton} href="/developers">Build with ZKProofport</Link></div>
-          <div className={styles.footerBottom}><Link className={styles.brand} href="/"><BrandMark size={32} /><span>ZKProofport</span></Link><a href="https://masselabs.com" target="_blank" rel="noopener noreferrer">Built by Masse Labs</a><nav aria-label="Footer navigation"><a href="https://masselabs.com/#team" target="_blank" rel="noopener noreferrer">Team</a><Link href="/developers">Docs</Link><a href="https://github.com/zkproofport" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://x.com/zkproofport" target="_blank" rel="noopener noreferrer">X</a></nav><span className={styles.copyright}>© {new Date().getFullYear()} ZKProofport</span></div>
+          <div className={styles.footerBottom}><Link className={styles.brand} href="/"><BrandMark size={32} /><BrandWordmark /></Link><a href="https://masselabs.com" target="_blank" rel="noopener noreferrer">Built by Masse Labs</a><nav aria-label="Footer navigation"><a href="https://masselabs.com/#team" target="_blank" rel="noopener noreferrer">Team</a><Link href="/developers">Docs</Link><Link href="/brand">Brand kit</Link><a href="https://github.com/zkproofport" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://x.com/zkproofport" target="_blank" rel="noopener noreferrer">X</a></nav><span className={styles.copyright}>© {new Date().getFullYear()} ZKProofport</span></div>
         </div>
       </footer>
     </div>

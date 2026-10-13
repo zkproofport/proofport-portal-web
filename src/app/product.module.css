@@ -33,6 +33,7 @@
 .headerInner { width: min(var(--content-width), calc(100% - 2 * var(--page-gutter))); margin: auto; min-height: 96px; display: flex; align-items: center; justify-content: space-between; gap: 40px; border-bottom: 1px solid var(--line); }
 .brand { display: inline-flex; gap: 14px; align-items: center; font-size: 2.5rem; font-weight: 600; letter-spacing: -.055em; white-space: nowrap; }
 .brandMark { object-fit: contain; flex-shrink: 0; }
+.brand .brandWordmark { width: 180px; height: auto; flex-shrink: 0; }
 .navigation { display: flex; gap: clamp(24px, 2.6vw, 50px); align-items: center; font-size: 1.7rem; }
 .navigation a { display: inline-flex; gap: 8px; align-items: center; min-height: 48px; }
 .navigation a:hover, .footer a:hover, .heroAttribution a:hover { color: var(--gold-light); }
@@ -229,6 +230,9 @@
   .headerInner { width: calc(100% - 48px); min-height: 80px; }
   .brand { font-size: 2.2rem; gap: 10px; }
   .brand > img { width: 36px; height: 36px; }
+  .brand .brandWordmark { width: 160px; height: auto; }
+  .headerInner { gap: 12px; }
+  .menuButton { gap: 8px; padding-left: 0; }
   .navigation { left: -24px; right: -24px; padding-inline: 24px; }
   .hero { padding-block: 48px 80px; }
   .hero h1 { font-size: clamp(4.8rem, 11.2vw, 5.8rem); letter-spacing: -.055em; line-height: 1.09; }
@@ -299,6 +303,11 @@
   .docsSection h2 { font-size: 3.8rem; }
   .docsSection > p, .docsRow p, .docsSection details p { font-size: 1.9rem; }
   .docsRow h3 { font-size: 2.5rem; }
+}
+@media (max-width: 360px) {
+  .headerInner { width: calc(100% - 32px); gap: 8px; }
+  .navigation { left: -16px; right: -16px; padding-inline: 16px; }
+  .menuButton { font-size: 1.6rem; gap: 6px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .site *, .site *::before, .site *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }

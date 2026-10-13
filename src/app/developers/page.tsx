@@ -53,7 +53,7 @@ export default function Developers() {
           <div className={styles.resourceLinks}><Resource href="https://github.com/zkproofport/circuits/tree/main/deployments">Verifier deployment records</Resource><Resource href="https://github.com/zkproofport/circuits#readme">Supported networks</Resource><Resource href="https://github.com/zkproofport">All repositories</Resource></div>
         </section>
       </main>
-      <footer className={`${styles.footer} ${styles.docsFooter}`}><div className={`${styles.container} ${styles.footerBottom}`}><Link href="/">ZKProofport home</Link><Resource href="https://masselabs.com">Built by Masse Labs</Resource></div></footer>
+      <footer className={`${styles.footer} ${styles.docsFooter}`}><div className={`${styles.container} ${styles.footerBottom}`}><nav aria-label="Footer navigation"><Link href="/">ZKProofport home</Link><Link href="/brand">Brand kit</Link></nav><Resource href="https://masselabs.com">Built by Masse Labs</Resource></div></footer>
     </div>
   );
 }

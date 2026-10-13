@@ -1,0 +1,42 @@
+ZKProofport — Brand kit
+Version: 2026-10-13
+
+IDENTITY
+Write ZKProofport as one word. Only ZKP uses the pixel treatment; roofport
+uses clean Inter outlines. The nine-row grid contains 114 tiles, reduced
+from 202 in the original concept. Keep all tiles, spacing and colors intact.
+The Z uses an optically corrected seven-column grid with a symmetrical
+diagonal, matching the tile size and cap height of K and P.
+The shield and anchor are the unchanged original product symbol.
+
+FILES
+logo-light / logo-dark: horizontal shield and wordmark for light / dark backgrounds.
+stacked-light / stacked-dark: centered vertical versions.
+wordmark-light / wordmark-dark: gold ZKP with navy / paper suffix.
+wordmark-mono-light / wordmark-mono-dark: single-color wordmarks.
+symbol: unchanged shield and anchor, original 600 x 600 PNG.
+cover: 1600 x 900 brand cover.
+SVG wordmarks are outlined vectors and require no font installation.
+SVG lockups embed the original 600 px shield bitmap. Use the wordmark-only
+SVG for fully vector output at very large sizes. PNG logos are transparent;
+the cover is opaque. The shield colors stay intact in every version.
+
+COLORS
+Midnight #071827; Gold #CBA65E; Light Gold #DFC18A; Paper #F2F3EE.
+The pixel pattern also uses a darker gold #BA954F.
+TYPOGRAPHY
+Inter: 750 for the source ZKP glyphs, 650 for roofport.
+Font license: INTER-OFL.txt (SIL Open Font License).
+
+USAGE
+Leave clear space of at least half the capital-letter height around the mark.
+Use the horizontal logo at 240 px wide or larger; wordmark alone at 160 px
+or larger. For tighter placements use the shield alone, at least 32 px tall.
+Choose light or dark variants for contrast. Do not rotate, stretch, recolor,
+remove tiles, add shadows, or pixelate the shield. Do not imply endorsement
+or affiliation without permission.
+
+ZKProofport is a product by Masse Labs. These are product brand assets;
+the company has its own brand kit at https://masselabs.com/brand.html.
+Contact: sooyoung.hyun@masselabs.com
+https://zkproofport.com/brand

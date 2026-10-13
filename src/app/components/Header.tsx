@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRef, useState } from "react";
 import { BrandMark } from "./ProductVisuals";
+import BrandWordmark from "./BrandWordmark";
 import styles from "../product.module.css";
 
 export default function Header() {
@@ -18,7 +19,7 @@ export default function Header() {
       }
     }}>
       <div className={styles.headerInner}>
-        <Link href="/" className={styles.brand} aria-label="ZKProofport home" onClick={closeMenu}><BrandMark size={44} priority /><span>ZKProofport</span></Link>
+        <Link href="/" className={styles.brand} aria-label="ZKProofport home" onClick={closeMenu}><BrandMark size={44} priority /><BrandWordmark /></Link>
         <button ref={menuButton} type="button" className={styles.menuButton} aria-expanded={menuOpen} aria-controls="product-navigation" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? "Close" : "Menu"}<span aria-hidden="true">{menuOpen ? "−" : "+"}</span></button>
         <nav id="product-navigation" className={`${styles.navigation} ${menuOpen ? styles.navigationOpen : ""}`} aria-label="Main navigation">
           <Link href="/#product" onClick={closeMenu}>Product</Link>

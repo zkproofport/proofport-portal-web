@@ -338,6 +338,8 @@ export default function PortalPage() {
         </span>
         <span>•</span>
         <span>X: <a href="https://x.com/zkproofport">@zkproofport</a></span>
+        <span>•</span>
+        <Link href="/brand">Brand kit</Link>
       </footer>
     </div>
   );
