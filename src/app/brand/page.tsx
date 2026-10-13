@@ -51,7 +51,7 @@ export default function BrandKit() {
     <main id="main" className={`${styles.container} ${brand.main}`}>
       <section className={brand.hero} aria-labelledby="brand-heading">
         <div className={brand.heroHeading}><div><p className={brand.index}>ZKProofport / Brand resources</p><h1 id="brand-heading">Brand kit.</h1><p className={brand.lede}>Our identity, ready to share.<br />Logos and assets for your next integration, story, or presentation.</p></div><div className={brand.downloadKit}><a className={styles.primaryButton} href="/brand/zkproofport-brand-kit.zip" download>Download brand kit <span aria-hidden="true">↓</span></a><p>SVG + PNG · Includes usage guide</p></div></div>
-        <div className={brand.heroSignature}><Image src="/brand/zkproofport-logo-dark.svg" alt="ZKProofport, with a gold pixel ZKP wordmark and the original shield and anchor" width={1017} height={240} priority /></div>
+        <div className={brand.heroSignature}><Image src="/brand/zkproofport-logo-dark.svg" alt="ZKProofport, with a gold pixel ZKP wordmark and the original shield and anchor" width={1022} height={240} priority /></div>
         <div className={brand.signatureNotes}><span>The original shield.</span><span>A distinct pixel signature.</span><span>One ZKProofport.</span></div>
       </section>
 

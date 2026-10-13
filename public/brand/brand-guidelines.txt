@@ -7,6 +7,8 @@ uses clean Inter outlines. The nine-row grid contains 114 tiles, reduced
 from 202 in the original concept. Keep all tiles, spacing and colors intact.
 The Z uses an optically corrected seven-column grid with a symmetrical
 diagonal, matching the tile size and cap height of K and P.
+The rt pair has an additional 0.036 em of spacing so its outlines remain
+clearly separated, consistent with the gap between the round letters.
 The shield and anchor are the unchanged original product symbol.
 
 FILES
