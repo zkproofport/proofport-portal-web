@@ -31,7 +31,7 @@
 .skipLink:focus { top: 16px; }
 .header { position: sticky; top: 0; z-index: 30; background: var(--midnight); }
 .headerInner { width: min(var(--content-width), calc(100% - 2 * var(--page-gutter))); margin: auto; min-height: 96px; display: flex; align-items: center; justify-content: space-between; gap: 40px; border-bottom: 1px solid var(--line); }
-.brand { display: inline-flex; gap: 14px; align-items: center; font-size: 2.5rem; font-weight: 600; letter-spacing: -.055em; white-space: nowrap; }
+.brand { display: inline-flex; gap: 6px; align-items: center; font-size: 2.5rem; font-weight: 600; letter-spacing: -.055em; white-space: nowrap; }
 .brandMark { object-fit: contain; flex-shrink: 0; }
 .brand .brandWordmark { width: 180px; height: auto; flex-shrink: 0; }
 .navigation { display: flex; gap: clamp(24px, 2.6vw, 50px); align-items: center; font-size: 1.7rem; }
@@ -67,8 +67,8 @@
 .hiddenLines i { height: 6px; width: 100%; background: repeating-linear-gradient(90deg, #607385 0 5px, transparent 5px 9px); opacity: .6; }
 .hiddenLines i:nth-child(2) { width: 80%; justify-self: center; }
 .hiddenLines i:nth-child(3) { width: 58%; justify-self: center; }
-.heroTransform { display: flex; flex-direction: column; gap: 12px; align-items: center; width: 224px; padding: 20px 24px; border: 1.5px solid var(--gold-line); }
-.heroTransform span { font-size: 2.6rem; letter-spacing: -.04em; }
+.heroTransform { display: flex; flex-direction: column; gap: 8px; align-items: center; width: 224px; padding: 20px 24px; border: 1.5px solid var(--gold-line); }
+.heroTransform .brandWordmark { display: block; width: 174px; max-width: 100%; height: auto; }
 .publicSample { width: 100%; padding-top: 20px; }
 .heroPredicate { font-family: var(--font-mono); font-size: clamp(2.8rem, 2.65vw, 4.5rem); letter-spacing: -.07em; line-height: 1.2; white-space: nowrap; margin-top: 18px !important; }
 .heroPredicate span { color: var(--gold-light); }
@@ -228,7 +228,7 @@
 @media (max-width: 680px) {
   .site { --page-gutter: 24px; --layout-gap: 32px; --section-space: 96px; }
   .headerInner { width: calc(100% - 48px); min-height: 80px; }
-  .brand { font-size: 2.2rem; gap: 10px; }
+  .brand { font-size: 2.2rem; gap: 4px; }
   .brand > img { width: 36px; height: 36px; }
   .brand .brandWordmark { width: 160px; height: auto; }
   .headerInner { gap: 12px; }
@@ -241,8 +241,7 @@
   .primaryButton, .secondaryButton { font-size: 1.8rem; }
   .secondaryButton { gap: 14px; }
   .heroProof { margin-top: 32px; }
-  .heroTransform > img { width: 100px; height: 100px; }
-  .heroTransform span { font-size: 2.6rem; }
+  .heroTransform .brandMark { width: 100px; height: 100px; }
   .heroPredicate { font-size: 3rem; }
   .diagramLabel { font-size: 1.8rem; }
   .privateSample { width: 72%; }

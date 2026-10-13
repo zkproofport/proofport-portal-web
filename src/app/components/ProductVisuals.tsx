@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { Fragment } from "react";
+import BrandWordmark from "./BrandWordmark";
 import styles from "../product.module.css";
 
 /* Connectors share a 1.5px stroke and a 5px arrowhead. SVG coordinates are
@@ -48,7 +49,7 @@ export function HeroProof() {
         <div className={styles.hiddenLines} aria-hidden="true"><i /><i /><i /></div>
       </div>
       <VerticalConnector />
-      <div className={styles.heroTransform}><BrandMark size={104} priority /><span>ZKProofport</span></div>
+      <div className={styles.heroTransform}><BrandMark size={104} priority /><BrandWordmark /></div>
       <VerticalConnector directed />
       <div className={styles.publicSample}>
         <span className={styles.diagramLabel}>Eligibility proof</span>
