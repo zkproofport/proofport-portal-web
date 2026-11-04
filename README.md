@@ -2,9 +2,10 @@
 
 ## Website routes
 
-- `/`: product homepage for ZKProofport private eligibility infrastructure.
-- `/developers`: integration entry points, trust models, circuit specifications, and deployment references.
+- `/`: four-section product homepage: private eligibility, GIWA Dojang examples, platform, and build resources.
+- `/developers`: concise developer hub linking to Mobile SDK, Agent SDK / MCP, Circuits & Verifiers, and GIWA examples.
 - `/portal`: the SDK-invoked browser proof runner described below.
+- `/brand`: downloadable brand assets and usage guidelines.
 
 Homepage content decisions and implementation-status evidence are documented in [the website content review](docs/website-content-review.md).
 

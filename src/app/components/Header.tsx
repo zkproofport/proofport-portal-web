@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useRef, useState } from "react";
 import { BrandMark } from "./ProductVisuals";
 import BrandWordmark from "./BrandWordmark";
+import { resources } from "../resources";
 import styles from "../product.module.css";
 
 export default function Header() {
@@ -23,10 +24,9 @@ export default function Header() {
         <button ref={menuButton} type="button" className={styles.menuButton} aria-expanded={menuOpen} aria-controls="product-navigation" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? "Close" : "Menu"}<span aria-hidden="true">{menuOpen ? "−" : "+"}</span></button>
         <nav id="product-navigation" className={`${styles.navigation} ${menuOpen ? styles.navigationOpen : ""}`} aria-label="Main navigation">
           <Link href="/#product" onClick={closeMenu}>Product</Link>
-          <Link href="/#how-it-works" onClick={closeMenu}>How it works</Link>
-          <Link href="/#demo" onClick={closeMenu}>Demo</Link>
+          <Link href="/#giwa" onClick={closeMenu}>Featured Work</Link>
           <Link href="/developers" onClick={closeMenu}>Developers</Link>
-          <a href="https://masselabs.com/#team" target="_blank" rel="noopener noreferrer" aria-label="Team at Masse Labs (opens in a new tab)" onClick={closeMenu}>Team · Masse Labs</a>
+          <a href={resources.demo} target="_blank" rel="noopener noreferrer" onClick={closeMenu}>Demo</a>
         </nav>
       </div>
     </header>
